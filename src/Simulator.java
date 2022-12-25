@@ -15,22 +15,34 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 public class Simulator extends javax.swing.JFrame {
 
-    private int R0;    //Stores GPR0 value
-    private int R1;    //Stores GPR1 value
-    private int R2;    //Stores GPR2 value
-    private int R3;    //Stores GPR3 value
-    private int X1;    //Stores IXR1 value
-    private int X2;    //Stores IXR2 value
-    private int X3;    //Stores IXR3 value
-    private int PC;    //Stores PC value
-    private int MAR;   //Stores MAR value
-    private int MBR;   //Stores MBR value
-    private int IR;    //Stores IR value
-    private int MFR;   //Stores MFR value
-    private int CC;    //Stores CC value
+    private short R0;    //Stores GPR0 value
+    private short R1;    //Stores GPR1 value
+    private short R2;    //Stores GPR2 value
+    private short R3;    //Stores GPR3 value
+    private short FR0;    //Stores FR0 value
+    private short FR1;    //Stores FR1 value
+    private short X1;    //Stores IXR1 value
+    private short X2;    //Stores IXR2 value
+    private short X3;    //Stores IXR3 value
+    private short PC;    //Stores PC value
+    private short MAR;   //Stores MAR value
+    private short MBR;   //Stores MBR value
+    private short IR;    //Stores IR value
+    private short MFR;   //Stores MFR value
+    private short CC0;    //Stores CC0-OverFlow value
+    private short CC1;    //Stores CC1-UnderFlow value
+    private short CC2;    //Stores CC2-DivZero value
+    private short CC3;    //Stores CC3-EqualOrNot value
+    public short InputSignal; //Stores Input Signal status
+    public short InputVal; //Stores Input Value
+    public static Cache[] cache=new Cache[16];
+    Queue<Short> FIFO = new LinkedList<>();
 
     /**
      * Creates new form Simulator
@@ -41,6 +53,8 @@ public class Simulator extends javax.swing.JFrame {
         R1 = 0;
         R2 = 0;
         R3 = 0;
+        FR0 = 0;
+        FR1 = 0;
         X1 = 0;
         X2 = 0;
         X3 = 0;
@@ -49,10 +63,15 @@ public class Simulator extends javax.swing.JFrame {
         MBR = 0;
         IR = 0;
         MFR = 0;
-        CC = 0;
+        CC0 = 0;
+        CC1 = 0;
+        CC2 = 0;
+        CC3 = 0;
+        InputSignal = 0;
+        InputVal = 0;
     }
 
-    public static int[] memory=new int[2048];
+    public static short[] memory=new short[2048];
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -245,6 +264,42 @@ public class Simulator extends javax.swing.JFrame {
         CC_2 = new javax.swing.JPanel();
         CC_1 = new javax.swing.JPanel();
         CC_0 = new javax.swing.JPanel();
+        jLabel_R4 = new javax.swing.JLabel();
+        FR0_15 = new javax.swing.JPanel();
+        FR0_14 = new javax.swing.JPanel();
+        FR0_13 = new javax.swing.JPanel();
+        FR0_12 = new javax.swing.JPanel();
+        FR0_11 = new javax.swing.JPanel();
+        FR0_10 = new javax.swing.JPanel();
+        FR0_9 = new javax.swing.JPanel();
+        FR0_8 = new javax.swing.JPanel();
+        FR0_7 = new javax.swing.JPanel();
+        FR0_6 = new javax.swing.JPanel();
+        FR0_5 = new javax.swing.JPanel();
+        FR0_4 = new javax.swing.JPanel();
+        FR0_3 = new javax.swing.JPanel();
+        FR0_2 = new javax.swing.JPanel();
+        FR0_1 = new javax.swing.JPanel();
+        FR0_0 = new javax.swing.JPanel();
+        Load_FR0 = new javax.swing.JButton();
+        jLabel_R5 = new javax.swing.JLabel();
+        FR1_15 = new javax.swing.JPanel();
+        FR1_14 = new javax.swing.JPanel();
+        FR1_13 = new javax.swing.JPanel();
+        FR1_12 = new javax.swing.JPanel();
+        FR1_11 = new javax.swing.JPanel();
+        FR1_10 = new javax.swing.JPanel();
+        FR1_9 = new javax.swing.JPanel();
+        FR1_8 = new javax.swing.JPanel();
+        FR1_7 = new javax.swing.JPanel();
+        FR1_6 = new javax.swing.JPanel();
+        FR1_5 = new javax.swing.JPanel();
+        FR1_4 = new javax.swing.JPanel();
+        FR1_3 = new javax.swing.JPanel();
+        FR1_2 = new javax.swing.JPanel();
+        FR1_1 = new javax.swing.JPanel();
+        FR1_0 = new javax.swing.JPanel();
+        Load_FR1 = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         X1_15 = new javax.swing.JPanel();
         X1_14 = new javax.swing.JPanel();
@@ -304,12 +359,84 @@ public class Simulator extends javax.swing.JFrame {
         Halt_Display = new javax.swing.JPanel();
         Clear_LEDs = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        Phase2 = new javax.swing.JPanel();
+        JLabel_Keyboard = new javax.swing.JLabel();
+        JLabel_Printer = new javax.swing.JLabel();
+        jLabel_Cache = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        KeyBoard = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        Printer = new javax.swing.JTextArea();
+        CacheArea = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel_Tag0 = new javax.swing.JLabel();
+        Tag_0 = new javax.swing.JTextField();
+        Value_0 = new javax.swing.JTextField();
+        jLabel_Tag8 = new javax.swing.JLabel();
+        Tag_8 = new javax.swing.JTextField();
+        Value_8 = new javax.swing.JTextField();
+        jLabel_Tag1 = new javax.swing.JLabel();
+        Tag_1 = new javax.swing.JTextField();
+        Value_1 = new javax.swing.JTextField();
+        jLabel_Tag9 = new javax.swing.JLabel();
+        Tag_9 = new javax.swing.JTextField();
+        Value_9 = new javax.swing.JTextField();
+        jLabel_Tag2 = new javax.swing.JLabel();
+        Tag_2 = new javax.swing.JTextField();
+        Value_2 = new javax.swing.JTextField();
+        jLabel_Tag10 = new javax.swing.JLabel();
+        Tag_10 = new javax.swing.JTextField();
+        Value_10 = new javax.swing.JTextField();
+        jLabel_Tag3 = new javax.swing.JLabel();
+        Tag_3 = new javax.swing.JTextField();
+        Value_3 = new javax.swing.JTextField();
+        jLabel_Tag11 = new javax.swing.JLabel();
+        Tag_11 = new javax.swing.JTextField();
+        Value_11 = new javax.swing.JTextField();
+        jLabel_Tag4 = new javax.swing.JLabel();
+        Tag_4 = new javax.swing.JTextField();
+        Value_4 = new javax.swing.JTextField();
+        jLabel_Tag12 = new javax.swing.JLabel();
+        Tag_12 = new javax.swing.JTextField();
+        Value_12 = new javax.swing.JTextField();
+        jLabel_Tag5 = new javax.swing.JLabel();
+        Tag_5 = new javax.swing.JTextField();
+        Value_5 = new javax.swing.JTextField();
+        jLabel_Tag13 = new javax.swing.JLabel();
+        Tag_13 = new javax.swing.JTextField();
+        Value_13 = new javax.swing.JTextField();
+        jLabel_Tag6 = new javax.swing.JLabel();
+        Tag_6 = new javax.swing.JTextField();
+        Value_6 = new javax.swing.JTextField();
+        jLabel_Tag14 = new javax.swing.JLabel();
+        Tag_14 = new javax.swing.JTextField();
+        Value_14 = new javax.swing.JTextField();
+        jLabel_Tag7 = new javax.swing.JLabel();
+        Tag_7 = new javax.swing.JTextField();
+        Value_7 = new javax.swing.JTextField();
+        jLabel_Tag15 = new javax.swing.JLabel();
+        Tag_15 = new javax.swing.JTextField();
+        Value_15 = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        ConsoleLog = new javax.swing.JTextArea();
+        Run_Program_1 = new javax.swing.JButton();
+        Input = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        Run_Program_2 = new javax.swing.JButton();
+        Run_Vector_Program = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
         jPanel1.setForeground(new java.awt.Color(255, 255, 255));
+        jPanel1.setAutoscrolls(true);
         jPanel1.setEnabled(false);
 
         jLabel_R0.setForeground(new java.awt.Color(255, 255, 255));
@@ -1854,6 +1981,7 @@ public class Simulator extends javax.swing.JFrame {
         });
 
         jPanel7.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel7.setOpaque(false);
 
         jLabel_IR.setForeground(new java.awt.Color(255, 255, 255));
         jLabel_IR.setText("IR");
@@ -2135,13 +2263,385 @@ public class Simulator extends javax.swing.JFrame {
             .addGap(0, 24, Short.MAX_VALUE)
         );
 
+        jLabel_R4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_R4.setText("FR0");
+
+        javax.swing.GroupLayout FR0_15Layout = new javax.swing.GroupLayout(FR0_15);
+        FR0_15.setLayout(FR0_15Layout);
+        FR0_15Layout.setHorizontalGroup(
+            FR0_15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_15Layout.setVerticalGroup(
+            FR0_15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_14Layout = new javax.swing.GroupLayout(FR0_14);
+        FR0_14.setLayout(FR0_14Layout);
+        FR0_14Layout.setHorizontalGroup(
+            FR0_14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_14Layout.setVerticalGroup(
+            FR0_14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_13Layout = new javax.swing.GroupLayout(FR0_13);
+        FR0_13.setLayout(FR0_13Layout);
+        FR0_13Layout.setHorizontalGroup(
+            FR0_13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_13Layout.setVerticalGroup(
+            FR0_13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_12Layout = new javax.swing.GroupLayout(FR0_12);
+        FR0_12.setLayout(FR0_12Layout);
+        FR0_12Layout.setHorizontalGroup(
+            FR0_12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_12Layout.setVerticalGroup(
+            FR0_12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_11Layout = new javax.swing.GroupLayout(FR0_11);
+        FR0_11.setLayout(FR0_11Layout);
+        FR0_11Layout.setHorizontalGroup(
+            FR0_11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_11Layout.setVerticalGroup(
+            FR0_11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_10Layout = new javax.swing.GroupLayout(FR0_10);
+        FR0_10.setLayout(FR0_10Layout);
+        FR0_10Layout.setHorizontalGroup(
+            FR0_10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_10Layout.setVerticalGroup(
+            FR0_10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_9Layout = new javax.swing.GroupLayout(FR0_9);
+        FR0_9.setLayout(FR0_9Layout);
+        FR0_9Layout.setHorizontalGroup(
+            FR0_9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_9Layout.setVerticalGroup(
+            FR0_9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_8Layout = new javax.swing.GroupLayout(FR0_8);
+        FR0_8.setLayout(FR0_8Layout);
+        FR0_8Layout.setHorizontalGroup(
+            FR0_8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_8Layout.setVerticalGroup(
+            FR0_8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_7Layout = new javax.swing.GroupLayout(FR0_7);
+        FR0_7.setLayout(FR0_7Layout);
+        FR0_7Layout.setHorizontalGroup(
+            FR0_7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_7Layout.setVerticalGroup(
+            FR0_7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_6Layout = new javax.swing.GroupLayout(FR0_6);
+        FR0_6.setLayout(FR0_6Layout);
+        FR0_6Layout.setHorizontalGroup(
+            FR0_6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_6Layout.setVerticalGroup(
+            FR0_6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_5Layout = new javax.swing.GroupLayout(FR0_5);
+        FR0_5.setLayout(FR0_5Layout);
+        FR0_5Layout.setHorizontalGroup(
+            FR0_5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_5Layout.setVerticalGroup(
+            FR0_5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_4Layout = new javax.swing.GroupLayout(FR0_4);
+        FR0_4.setLayout(FR0_4Layout);
+        FR0_4Layout.setHorizontalGroup(
+            FR0_4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_4Layout.setVerticalGroup(
+            FR0_4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_3Layout = new javax.swing.GroupLayout(FR0_3);
+        FR0_3.setLayout(FR0_3Layout);
+        FR0_3Layout.setHorizontalGroup(
+            FR0_3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_3Layout.setVerticalGroup(
+            FR0_3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_2Layout = new javax.swing.GroupLayout(FR0_2);
+        FR0_2.setLayout(FR0_2Layout);
+        FR0_2Layout.setHorizontalGroup(
+            FR0_2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_2Layout.setVerticalGroup(
+            FR0_2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_1Layout = new javax.swing.GroupLayout(FR0_1);
+        FR0_1.setLayout(FR0_1Layout);
+        FR0_1Layout.setHorizontalGroup(
+            FR0_1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_1Layout.setVerticalGroup(
+            FR0_1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR0_0Layout = new javax.swing.GroupLayout(FR0_0);
+        FR0_0.setLayout(FR0_0Layout);
+        FR0_0Layout.setHorizontalGroup(
+            FR0_0Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR0_0Layout.setVerticalGroup(
+            FR0_0Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        Load_FR0.setText("LD");
+        Load_FR0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Load_FR0ActionPerformed(evt);
+            }
+        });
+
+        jLabel_R5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_R5.setText("FR1");
+
+        javax.swing.GroupLayout FR1_15Layout = new javax.swing.GroupLayout(FR1_15);
+        FR1_15.setLayout(FR1_15Layout);
+        FR1_15Layout.setHorizontalGroup(
+            FR1_15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_15Layout.setVerticalGroup(
+            FR1_15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_14Layout = new javax.swing.GroupLayout(FR1_14);
+        FR1_14.setLayout(FR1_14Layout);
+        FR1_14Layout.setHorizontalGroup(
+            FR1_14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_14Layout.setVerticalGroup(
+            FR1_14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_13Layout = new javax.swing.GroupLayout(FR1_13);
+        FR1_13.setLayout(FR1_13Layout);
+        FR1_13Layout.setHorizontalGroup(
+            FR1_13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_13Layout.setVerticalGroup(
+            FR1_13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_12Layout = new javax.swing.GroupLayout(FR1_12);
+        FR1_12.setLayout(FR1_12Layout);
+        FR1_12Layout.setHorizontalGroup(
+            FR1_12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_12Layout.setVerticalGroup(
+            FR1_12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_11Layout = new javax.swing.GroupLayout(FR1_11);
+        FR1_11.setLayout(FR1_11Layout);
+        FR1_11Layout.setHorizontalGroup(
+            FR1_11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_11Layout.setVerticalGroup(
+            FR1_11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_10Layout = new javax.swing.GroupLayout(FR1_10);
+        FR1_10.setLayout(FR1_10Layout);
+        FR1_10Layout.setHorizontalGroup(
+            FR1_10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_10Layout.setVerticalGroup(
+            FR1_10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_9Layout = new javax.swing.GroupLayout(FR1_9);
+        FR1_9.setLayout(FR1_9Layout);
+        FR1_9Layout.setHorizontalGroup(
+            FR1_9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_9Layout.setVerticalGroup(
+            FR1_9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_8Layout = new javax.swing.GroupLayout(FR1_8);
+        FR1_8.setLayout(FR1_8Layout);
+        FR1_8Layout.setHorizontalGroup(
+            FR1_8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_8Layout.setVerticalGroup(
+            FR1_8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_7Layout = new javax.swing.GroupLayout(FR1_7);
+        FR1_7.setLayout(FR1_7Layout);
+        FR1_7Layout.setHorizontalGroup(
+            FR1_7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_7Layout.setVerticalGroup(
+            FR1_7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_6Layout = new javax.swing.GroupLayout(FR1_6);
+        FR1_6.setLayout(FR1_6Layout);
+        FR1_6Layout.setHorizontalGroup(
+            FR1_6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_6Layout.setVerticalGroup(
+            FR1_6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_5Layout = new javax.swing.GroupLayout(FR1_5);
+        FR1_5.setLayout(FR1_5Layout);
+        FR1_5Layout.setHorizontalGroup(
+            FR1_5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_5Layout.setVerticalGroup(
+            FR1_5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_4Layout = new javax.swing.GroupLayout(FR1_4);
+        FR1_4.setLayout(FR1_4Layout);
+        FR1_4Layout.setHorizontalGroup(
+            FR1_4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_4Layout.setVerticalGroup(
+            FR1_4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_3Layout = new javax.swing.GroupLayout(FR1_3);
+        FR1_3.setLayout(FR1_3Layout);
+        FR1_3Layout.setHorizontalGroup(
+            FR1_3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_3Layout.setVerticalGroup(
+            FR1_3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_2Layout = new javax.swing.GroupLayout(FR1_2);
+        FR1_2.setLayout(FR1_2Layout);
+        FR1_2Layout.setHorizontalGroup(
+            FR1_2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_2Layout.setVerticalGroup(
+            FR1_2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_1Layout = new javax.swing.GroupLayout(FR1_1);
+        FR1_1.setLayout(FR1_1Layout);
+        FR1_1Layout.setHorizontalGroup(
+            FR1_1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_1Layout.setVerticalGroup(
+            FR1_1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout FR1_0Layout = new javax.swing.GroupLayout(FR1_0);
+        FR1_0.setLayout(FR1_0Layout);
+        FR1_0Layout.setHorizontalGroup(
+            FR1_0Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+        FR1_0Layout.setVerticalGroup(
+            FR1_0Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        Load_FR1.setText("LD");
+        Load_FR1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Load_FR1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addComponent(jLabel_IR)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addComponent(IR_15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(IR_14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2176,29 +2676,107 @@ public class Simulator extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(Load_IR, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel_MFR)
-                        .addGap(18, 18, 18)
-                        .addComponent(MFR_3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(MFR_2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(MFR_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(MFR_0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel_MFR)
+                                .addGap(18, 18, 18)
+                                .addComponent(MFR_3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MFR_2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MFR_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MFR_0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel_CC)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(CC_3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(CC_2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(CC_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(CC_0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(66, 66, 66))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel_CC)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel_R5)
+                                .addGap(26, 26, 26)
+                                .addComponent(FR1_15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR1_0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel_R4)
+                                .addGap(26, 26, 26)
+                                .addComponent(FR0_15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FR0_0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(CC_3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CC_2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CC_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CC_0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(66, 66, 66))
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Load_FR1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Load_FR0, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2238,7 +2816,49 @@ public class Simulator extends javax.swing.JFrame {
                     .addComponent(CC_0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CC_1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(CC_2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(63, 63, 63))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel_R4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(Load_FR0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR0_0, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel_R5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(Load_FR1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FR1_0, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jPanel8.setBackground(new java.awt.Color(0, 0, 0));
@@ -3015,10 +3635,475 @@ public class Simulator extends javax.swing.JFrame {
             }
         });
 
+        Phase2.setBackground(new java.awt.Color(0, 0, 0));
+
+        JLabel_Keyboard.setForeground(new java.awt.Color(255, 255, 255));
+        JLabel_Keyboard.setText("Keyboard");
+
+        JLabel_Printer.setForeground(new java.awt.Color(255, 255, 255));
+        JLabel_Printer.setText("Printer");
+
+        jLabel_Cache.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_Cache.setText("Cache");
+
+        KeyBoard.setColumns(20);
+        KeyBoard.setRows(5);
+        KeyBoard.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                KeyBoardKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                KeyBoardKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(KeyBoard);
+
+        Printer.setColumns(20);
+        Printer.setLineWrap(true);
+        Printer.setRows(5);
+        Printer.setEnabled(false);
+        jScrollPane2.setViewportView(Printer);
+
+        CacheArea.setBackground(new java.awt.Color(153, 153, 153));
+        CacheArea.setToolTipText("");
+
+        jLabel1.setText("Line#");
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Tag");
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("Value");
+
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("Tag");
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("Value");
+
+        jLabel_Tag0.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag0.setText("0");
+
+        Tag_0.setText("------------");
+
+        Value_0.setText("----------------");
+
+        jLabel_Tag8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag8.setText("8");
+
+        Tag_8.setText("------------");
+
+        Value_8.setText("----------------");
+
+        jLabel_Tag1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag1.setText("1");
+
+        Tag_1.setText("------------");
+
+        Value_1.setText("----------------");
+
+        jLabel_Tag9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag9.setText("9");
+
+        Tag_9.setText("------------");
+
+        Value_9.setText("----------------");
+
+        jLabel_Tag2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag2.setText("2");
+
+        Tag_2.setText("------------");
+
+        Value_2.setText("----------------");
+
+        jLabel_Tag10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag10.setText("10");
+
+        Tag_10.setText("------------");
+
+        Value_10.setText("----------------");
+
+        jLabel_Tag3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag3.setText("3");
+
+        Tag_3.setText("------------");
+
+        Value_3.setText("----------------");
+
+        jLabel_Tag11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag11.setText("11");
+
+        Tag_11.setText("------------");
+
+        Value_11.setText("----------------");
+
+        jLabel_Tag4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag4.setText("4");
+
+        Tag_4.setText("------------");
+
+        Value_4.setText("----------------");
+
+        jLabel_Tag12.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag12.setText("12");
+
+        Tag_12.setText("------------");
+
+        Value_12.setText("----------------");
+
+        jLabel_Tag5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag5.setText("5");
+
+        Tag_5.setText("------------");
+
+        Value_5.setText("----------------");
+
+        jLabel_Tag13.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag13.setText("13");
+
+        Tag_13.setText("------------");
+
+        Value_13.setText("----------------");
+
+        jLabel_Tag6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag6.setText("6");
+
+        Tag_6.setText("------------");
+
+        Value_6.setText("----------------");
+
+        jLabel_Tag14.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag14.setText("14");
+
+        Tag_14.setText("------------");
+
+        Value_14.setText("----------------");
+
+        jLabel_Tag7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag7.setText("7");
+
+        Tag_7.setText("------------");
+
+        Value_7.setText("----------------");
+
+        jLabel_Tag15.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel_Tag15.setText("15");
+
+        Tag_15.setText("------------");
+
+        Value_15.setText("----------------");
+
+        jLabel7.setText("Line#");
+
+        javax.swing.GroupLayout CacheAreaLayout = new javax.swing.GroupLayout(CacheArea);
+        CacheArea.setLayout(CacheAreaLayout);
+        CacheAreaLayout.setHorizontalGroup(
+            CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CacheAreaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CacheAreaLayout.createSequentialGroup()
+                        .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(CacheAreaLayout.createSequentialGroup()
+                                .addComponent(jLabel_Tag7, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Tag_7, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Value_7))
+                            .addGroup(CacheAreaLayout.createSequentialGroup()
+                                .addComponent(jLabel_Tag6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Tag_6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Value_6))
+                            .addGroup(CacheAreaLayout.createSequentialGroup()
+                                .addComponent(jLabel_Tag5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Tag_5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Value_5, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CacheAreaLayout.createSequentialGroup()
+                                .addComponent(jLabel_Tag14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Tag_14, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Value_14, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CacheAreaLayout.createSequentialGroup()
+                                .addComponent(jLabel_Tag13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Tag_13, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Value_13, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CacheAreaLayout.createSequentialGroup()
+                                .addComponent(jLabel_Tag15)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Tag_15, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Value_15, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CacheAreaLayout.createSequentialGroup()
+                        .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(CacheAreaLayout.createSequentialGroup()
+                                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(CacheAreaLayout.createSequentialGroup()
+                                        .addComponent(jLabel_Tag2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(Tag_2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(Value_2))
+                                    .addGroup(CacheAreaLayout.createSequentialGroup()
+                                        .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addGroup(CacheAreaLayout.createSequentialGroup()
+                                                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(jLabel_Tag0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                                    .addComponent(Tag_0, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
+                                            .addGroup(CacheAreaLayout.createSequentialGroup()
+                                                .addComponent(jLabel_Tag1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(Tag_1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(CacheAreaLayout.createSequentialGroup()
+                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                            .addComponent(Value_0, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                                            .addComponent(Value_1))))
+                                .addGap(24, 24, 24))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, CacheAreaLayout.createSequentialGroup()
+                                .addComponent(jLabel_Tag4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Tag_4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Value_4)
+                                .addGap(23, 23, 23))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, CacheAreaLayout.createSequentialGroup()
+                                .addComponent(jLabel_Tag3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Tag_3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Value_3)
+                                .addGap(24, 24, 24)))
+                        .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(CacheAreaLayout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(38, 38, 38)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(49, 49, 49)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CacheAreaLayout.createSequentialGroup()
+                                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(CacheAreaLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel_Tag8, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel_Tag9, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel_Tag10, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel_Tag11, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                    .addGroup(CacheAreaLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel_Tag12)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(CacheAreaLayout.createSequentialGroup()
+                                        .addComponent(Tag_8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(Value_8, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CacheAreaLayout.createSequentialGroup()
+                                        .addComponent(Tag_9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(Value_9, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(CacheAreaLayout.createSequentialGroup()
+                                        .addComponent(Tag_10)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(Value_10, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CacheAreaLayout.createSequentialGroup()
+                                        .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(Tag_12, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Tag_11, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(Value_12, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Value_11, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))))))
+                .addContainerGap())
+        );
+        CacheAreaLayout.setVerticalGroup(
+            CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CacheAreaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_Tag0)
+                    .addComponent(Tag_0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_Tag8)
+                    .addComponent(Tag_8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_Tag1)
+                    .addComponent(Tag_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_Tag9)
+                    .addComponent(Tag_9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_Tag2)
+                    .addComponent(Tag_2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_Tag10)
+                    .addComponent(Tag_10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Value_3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel_Tag3)
+                        .addComponent(Tag_3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel_Tag11)
+                        .addComponent(Tag_11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Value_11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_Tag4)
+                    .addComponent(Tag_4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_Tag12)
+                    .addComponent(Tag_12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_Tag5)
+                    .addComponent(Tag_5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_Tag13)
+                    .addComponent(Tag_13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_Tag6)
+                    .addComponent(Tag_6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_Tag14)
+                    .addComponent(Tag_14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(CacheAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_Tag7)
+                    .addComponent(Tag_7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_Tag15)
+                    .addComponent(Tag_15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Value_15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Console Log");
+
+        ConsoleLog.setEditable(false);
+        ConsoleLog.setColumns(20);
+        ConsoleLog.setRows(5);
+        jScrollPane3.setViewportView(ConsoleLog);
+
+        javax.swing.GroupLayout Phase2Layout = new javax.swing.GroupLayout(Phase2);
+        Phase2.setLayout(Phase2Layout);
+        Phase2Layout.setHorizontalGroup(
+            Phase2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Phase2Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(Phase2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JLabel_Keyboard)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(Phase2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JLabel_Printer)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addGroup(Phase2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_Cache)
+                    .addComponent(CacheArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        Phase2Layout.setVerticalGroup(
+            Phase2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Phase2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(Phase2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JLabel_Keyboard)
+                    .addComponent(JLabel_Printer)
+                    .addComponent(jLabel_Cache))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(Phase2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(CacheArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(Phase2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3))
+                    .addComponent(jScrollPane2))
+                .addContainerGap(105, Short.MAX_VALUE))
+        );
+
+        Run_Program_1.setBackground(new java.awt.Color(0, 204, 255));
+        Run_Program_1.setText("Load Program 1");
+        Run_Program_1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Run_Program_1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout InputLayout = new javax.swing.GroupLayout(Input);
+        Input.setLayout(InputLayout);
+        InputLayout.setHorizontalGroup(
+            InputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+        InputLayout.setVerticalGroup(
+            InputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("INPUT");
+
+        Run_Program_2.setBackground(new java.awt.Color(0, 204, 255));
+        Run_Program_2.setText("Load Program 2");
+        Run_Program_2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Run_Program_2ActionPerformed(evt);
+            }
+        });
+
+        Run_Vector_Program.setBackground(new java.awt.Color(0, 204, 255));
+        Run_Vector_Program.setText("Load Vector Program");
+        Run_Vector_Program.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Run_Vector_ProgramActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(Phase2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(174, 174, 174)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -3044,12 +4129,19 @@ public class Simulator extends javax.swing.JFrame {
                         .addComponent(jLabel_Address))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(262, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(189, 189, 189)
+                                .addComponent(SS, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(Run, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(96, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -3139,11 +4231,11 @@ public class Simulator extends javax.swing.JFrame {
                                                 .addGap(18, 18, 18)
                                                 .addComponent(Load_R3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(145, 145, 145)
+                                .addGap(130, 130, 130)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel_MBR)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(MBR_15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(MBR_14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -3326,16 +4418,23 @@ public class Simulator extends javax.swing.JFrame {
                         .addGap(41, 41, 41)
                         .addComponent(Load)
                         .addGap(54, 54, 54)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(IPL)
-                                .addGap(189, 189, 189)
-                                .addComponent(SS, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(Run, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton1))
-                        .addGap(276, 276, 276)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(Run_Program_1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addGap(82, 82, 82)
+                                .addComponent(Run_Program_2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Run_Vector_Program, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(233, 233, 233)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(Input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel_Run)
                                 .addGap(23, 23, 23)
@@ -3344,7 +4443,7 @@ public class Simulator extends javax.swing.JFrame {
                                 .addComponent(jLabel_Halt)
                                 .addGap(18, 18, 18)
                                 .addComponent(Halt_Display, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(123, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -3508,7 +4607,7 @@ public class Simulator extends javax.swing.JFrame {
                     .addComponent(jLabel_IXR)
                     .addComponent(jLabel_I)
                     .addComponent(jLabel_Address))
-                .addGap(47, 47, 47)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -3519,7 +4618,9 @@ public class Simulator extends javax.swing.JFrame {
                                 .addComponent(Load)
                                 .addComponent(IPL)
                                 .addComponent(SS, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(Run, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(Run, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Run_Program_1)
+                                .addComponent(Run_Vector_Program)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(4, 4, 4)
@@ -3528,24 +4629,35 @@ public class Simulator extends javax.swing.JFrame {
                                     .addComponent(Run_Display, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Run_Program_2)
+                                    .addComponent(jButton1)))))
                     .addComponent(Halt_Display, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(4, 4, 4)
+                .addGap(4, 6, Short.MAX_VALUE)
                 .addComponent(Clear_LEDs)
-                .addGap(25, 25, 25))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Input, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel8)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Phase2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -3642,19 +4754,465 @@ public class Simulator extends javax.swing.JFrame {
         IR_12.setBackground(Color.decode("#F2F2F2"));
         IR_13.setBackground(Color.decode("#F2F2F2"));
         IR_14.setBackground(Color.decode("#F2F2F2"));
-        IR_15.setBackground(Color.decode("#F2F2F2"));
         Reset_Toggle_Instruction();
         Halt_Display.setBackground(Color.decode("#F2F2F2"));
     }
     
+    private boolean IsSignBitSet(short value){
+        return value<0;
+    }
+    
+    
+    
+    private short getExponent(short value){
+        String value_binary = Integer.toBinaryString(value);
+        String exponent_binary="";
+        short sign = 1;
+        if(value_binary.length()==16){
+            if(value_binary.charAt(1)=='1'){
+                sign = -1;
+            }
+            exponent_binary+=value_binary.substring(2,8);
+        }
+        else if(value_binary.length()==15){
+            if(value_binary.charAt(0)=='1'){
+                sign = -1;
+            }
+            exponent_binary+=value_binary.substring(1,7);
+        }        
+        else if(value_binary.length()==14){
+            exponent_binary+=value_binary.substring(0,6);
+        }        
+        else if(value_binary.length()==13){
+            exponent_binary+=value_binary.substring(0,5);
+        }
+        else if(value_binary.length()==12){
+            exponent_binary+=value_binary.substring(0,4);
+        }
+        else if(value_binary.length()==11){
+            exponent_binary+=value_binary.substring(0,3);
+        }
+        else if(value_binary.length()==10){
+            exponent_binary+=value_binary.substring(0,2);
+        }
+        else if(value_binary.length()==9){
+            exponent_binary+=value_binary.substring(0,1);
+        }        
+        else{
+            exponent_binary="0";
+        }
+        System.out.println("getExponent of "+value_binary+" :"+(sign*Integer.parseInt(exponent_binary,2)));
+        return (short) (sign*Integer.parseInt(exponent_binary,2));
+    }
+    
+    public double convertToFloat(int content) {
+        double number;
+
+        String bits = String.format("%16S", Integer.toBinaryString(content).replace(' ', '0'));
+        bits = bits.replace(' ', '0');
+
+        int S_Bit = Integer.parseInt(bits.substring(0, 1), 2);
+        int Exponent = Integer.parseInt(bits.substring(1, 8), 2) - 63;
+        int Mantissa = Integer.parseInt(bits.substring(8), 2);
+
+        number = Mantissa * Math.pow(10, Exponent);
+
+        if (S_Bit == 0)
+        {
+            number = 0 - number;
+        }
+
+//        System.out.println(convertToFloat("33538"));   // Sting 1100001100000010
+
+        return number;
+    }
+    
+    private short getMantissa(short value){
+        String value_binary = Integer.toBinaryString(value);
+        String exponent_binary="";
+        if(value_binary.length()>=8){
+            exponent_binary+=value_binary.substring(value_binary.length()-8,value_binary.length());
+        }
+        else if(value_binary.length()>=7){
+            exponent_binary+=value_binary.substring(value_binary.length()-7,value_binary.length());
+        }        
+        else if(value_binary.length()>=6){
+            exponent_binary+=value_binary.substring(value_binary.length()-6,value_binary.length());
+        }        
+        else if(value_binary.length()>=5){
+            exponent_binary+=value_binary.substring(value_binary.length()-5,value_binary.length());
+        }
+        else if(value_binary.length()>=4){
+            exponent_binary+=value_binary.substring(value_binary.length()-4,value_binary.length());
+        }
+        else if(value_binary.length()>=3){
+            exponent_binary+=value_binary.substring(value_binary.length()-3,value_binary.length());
+        }
+        else if(value_binary.length()>=2){
+            exponent_binary+=value_binary.substring(value_binary.length()-2,value_binary.length());
+        }
+        else if(value_binary.length()>=1){
+            exponent_binary+=value_binary.substring(value_binary.length()-1,value_binary.length());
+        }
+        else{
+            exponent_binary+='0';
+        }
+        System.out.println("getMantissa of "+value_binary+" :"+Integer.parseInt(exponent_binary,2));
+        return (short) (Integer.parseInt(exponent_binary,2));
+    }
+    
+    private float getFloatVal(short value){
+        float floatingVal = (float) ((float) Math.pow(getMantissa(value),getExponent(value)));
+        if(IsSignBitSet(value)){
+            return -1*floatingVal;
+        }
+        else{
+            return floatingVal;
+        }
+    }
+    
+    public static double toDouble(String str)
+    {
+        double mantissa=0;
+        double exp=0;
+        for(int x=0; x<str.indexOf(" "); x++)
+        {
+            if(str.substring(x,x+1).equals("1") && x==0)
+                mantissa-=1;
+            else if(str.substring(x,x+1).equals("1"))
+                mantissa+=Math.pow(2,-x);
+        }
+        str=str.substring(str.indexOf(" ")+1);
+        for(int x=0; x<str.length(); x++)
+        {
+            if(str.substring(x,x+1).equals("1") && x==0)
+                exp+= -Math.pow(2,str.length()-1);
+            else if(str.substring(x,x+1).equals("1"))
+                exp+=Math.pow(2,str.length()-1-x);
+        }
+        return mantissa*Math.pow(2,exp);
+    }
+    
+    public static String toDecimalBinary(String num)
+    {
+        String ans="";
+        int temp=Integer.parseInt(num);
+        int count=(int)Math.pow(2, -num.length());
+        Stack<Integer> s=new Stack<Integer>();
+        for(int x=count; x>=0; x-=Math.pow(2, -x))
+        {
+            if(temp-Math.pow(2, -x)>=0)
+            {
+                temp-=Math.pow(2, -x);
+                s.push(1);
+            }
+            else
+                s.push(0);
+        }
+        while(s.size()>0)
+            ans+=s.pop();
+        return ans;
+    }
+    
+    public static String toMatissaExponent(double val, int m, int e)
+    {
+       String ans=""+val;
+       String exp="";
+       int expNum=0;
+       if(val>0)
+       {
+           expNum=Integer.toBinaryString(Integer.parseInt(ans.substring(0,ans.indexOf(".")))).length();
+           //if(Integer.parseInt(ans.substring(ans.indexOf(".")+1)) != 0)
+               ans=Integer.toBinaryString(Integer.parseInt(ans.substring(0,ans.indexOf("."))))+toDecimalBinary(ans.substring(ans.indexOf(".")+1));
+           /*else
+               ans=Integer.toBinaryString(Integer.parseInt(ans.substring(0,ans.indexOf("."))));*/
+           ans="0"+ans;
+           if(ans.length()>m)
+               return "np";
+           while(ans.length()<m)
+               ans="0"+ans;
+           exp=Integer.toBinaryString(expNum);
+           if(exp.length()>e)
+               return "np";
+           while(exp.length()<e)
+               exp="0"+exp;
+       }
+       else if(val<0)
+       {
+           ans=""+Math.abs(val);
+           expNum=Integer.toBinaryString(Integer.parseInt(ans.substring(0,ans.indexOf(".")))).length();
+           ans=Integer.toBinaryString(Integer.parseInt(ans.substring(0,ans.indexOf("."))))+toDecimalBinary(ans.substring(ans.indexOf(".")+1));
+           ans="0"+ans;
+           String temp="";
+           for(int x=0; x<ans.length(); x++)
+           {
+               if(ans.substring(x,x+1).equals("1"))
+                   temp+="0";
+               else
+                   temp+="1";
+           }
+           ans=Integer.toBinaryString((int)toDouble(temp)+1);
+           if(ans.length()>m)
+               return "np";
+           while(ans.length()<m)
+               ans="0"+ans;
+           exp=Integer.toBinaryString(expNum);
+           if(exp.length()>e)
+               return "np";
+           while(exp.length()<e)
+               exp="0"+exp;
+       }
+       else if(val==0)
+       {
+           for(int x=0; x<m; x++)
+               ans+="0";
+           for(int x=0; x<e; x++)
+               exp+="0";
+       }
+       System.out.println("toMatissaExponent : "+exp + ans);
+       return exp + ans;
+    }
+    
+    private short convertToShort1(float number){
+        if(number<0){
+            String val = "0"+toMatissaExponent(number,8,7);
+            return (short) Integer.parseInt(val, 2);
+        }
+        else{
+            String val = "1"+toMatissaExponent(number,8,7);
+            return (short) Integer.parseInt(val, 2);
+        }
+    }
+    
+    public int getIntValofFloat(double number)
+    {
+        String s = String.valueOf(number);
+        int n = s.length();
+
+        StringBuilder num_string = new StringBuilder();
+        int i, j, exponent, c;
+
+        for (i = 0; s.charAt(i) == '0' || s.charAt(i) == '.'; i++)
+            ;
+        for (j = n - 1; s.charAt(j) == '0' || s.charAt(j) == '.'; j--)
+            ;
+
+        c = s.indexOf('.');
+
+        if (c == -1) {
+            c = n;
+        }
+
+        num_string.append(s.charAt(i));
+
+        if (i != j) {
+            num_string.append('.');
+        }
+
+        for (int k = i + 1; k <= j; k++) {
+            if (s.charAt(k) != '.') {
+                num_string.append(s.charAt(k));
+            }
+        }
+
+        if (i < c) {
+            exponent = c - i - 1;
+        }
+        else {
+            exponent = c - i;
+        }
+
+        i = 0;
+        StringBuilder new_num_string = new StringBuilder();
+
+
+        while (true)
+        {
+
+            if (num_string.charAt(i) != '.')
+            {
+                new_num_string.append(num_string.charAt(i));
+            }
+
+            if (new_num_string.length() == 3)
+            {
+                break;
+            }
+
+            i++;
+        }
+
+        exponent = exponent - 2;
+
+
+        int mantissa = Integer.parseInt(new_num_string.toString());
+
+        if (mantissa > 255)
+        {
+            mantissa = Integer.parseInt(String.valueOf(mantissa).substring(0, 2));
+            exponent++;
+        }
+
+
+
+
+
+        String Final_Num_Bin = "";
+
+        if (number < 0)
+        {
+            Final_Num_Bin = Final_Num_Bin + "0";
+        }
+        else
+        {
+            Final_Num_Bin = Final_Num_Bin + "1";
+        }
+
+
+        if (exponent == 0)
+        {
+            Final_Num_Bin = Final_Num_Bin + "0000000";
+        } else if (exponent > 0) {
+            Final_Num_Bin = Final_Num_Bin + String.format("%7S", Integer.toBinaryString(64 + exponent).replace(' ', '0'));
+        } else if (exponent < 0) {
+            Final_Num_Bin = Final_Num_Bin + "0";
+            Final_Num_Bin = Final_Num_Bin + String.format("%6S", Integer.toBinaryString(64 - Math.abs(exponent)).replace(' ', '0'));
+        }
+
+
+        Final_Num_Bin = Final_Num_Bin + String.format("%8S", Integer.toBinaryString(mantissa).replace(' ', '0'));
+        Final_Num_Bin = Final_Num_Bin.substring(Final_Num_Bin.length()-16);
+
+        return Integer.parseInt(Final_Num_Bin, 2);
+    }
+    
+    @SuppressWarnings("empty-statement")
+    private short convertToShort12(float number){
+        String s = String.valueOf(number);
+        System.out.println("String.valueOf(number) "+s);
+        int n = s.length();
+        System.out.println("n "+n);
+
+        StringBuilder num_string = new StringBuilder();
+        int i, j, exponent, c;
+
+        for (i = 0; s.charAt(i) == '0' || s.charAt(i) == '.'; i++)
+            System.out.println("i loop ");
+        for (j = n - 1; s.charAt(j) == '0' || s.charAt(j) == '.'; j--)
+            System.out.println("j loop ");
+
+        c = s.indexOf('.');
+        System.out.println("c "+c);
+
+        if (c == -1) {
+            c = n;
+            System.out.println("c == -1 "+c);
+        }
+
+        num_string.append(s.charAt(i));
+        System.out.println("num_string 1 "+num_string);
+        System.out.println("i "+i);
+        System.out.println("j "+j);
+
+        if (i != j) {
+            num_string.append('.');
+            System.out.println("num_string 2 "+num_string);
+        }
+
+        for (int k = i + 1; k <= j; k++) {
+            if (s.charAt(k) != '.') {
+                num_string.append(s.charAt(k));
+                System.out.println("num_string 3 "+num_string);
+            }
+        }
+
+        if (i < c) {
+            exponent = c - i - 1;
+                System.out.println("exponent1 "+exponent);
+        }
+        else {
+            exponent = c - i;
+                System.out.println("exponent2 "+exponent);
+        }
+
+        i = 0;
+        StringBuilder new_num_string = new StringBuilder();
+
+        while (true)
+        {
+            System.out.println("i "+i);
+            System.out.println("new_num_string "+new_num_string);
+            if(i==num_string.length())
+                break;
+            if (num_string.charAt(i) != '.')
+            {
+                new_num_string.append(num_string.charAt(i));
+            }
+
+            if (new_num_string.length() == 3)
+            {
+                break;
+            }
+
+            i++;
+        }
+
+        exponent = exponent - 2;
+        System.out.println("exponent "+exponent);
+
+        int mantissa = Integer.parseInt(new_num_string.toString());
+        System.out.println("mantissa "+mantissa);
+
+        if (mantissa > 255)
+        {
+            mantissa = Integer.parseInt(String.valueOf(mantissa).substring(0, 2));
+            exponent++;
+            System.out.println("mantissa 1 "+mantissa);
+            System.out.println("exponent 1 "+exponent);
+        }
+
+        String Final_Num_Bin = "";
+
+        if (number < 0)
+        {
+            Final_Num_Bin = Final_Num_Bin + "0";
+            
+            System.out.println("Final_Num_Bin 1 "+Final_Num_Bin);
+        }
+        else
+        {
+            Final_Num_Bin = Final_Num_Bin + "1";
+            System.out.println("Final_Num_Bin 2 "+Final_Num_Bin);
+        }
+
+        if (exponent == 0)
+        {
+            Final_Num_Bin = Final_Num_Bin + "0000000";
+            System.out.println("Final_Num_Bin 3 "+Final_Num_Bin);
+        } else if (exponent > 0) {
+            Final_Num_Bin = Final_Num_Bin + String.format("%7S", Integer.toBinaryString(64 + exponent).replace(' ', '0'));
+            System.out.println("Final_Num_Bin 4 "+Final_Num_Bin);
+        } else if (exponent < 0) {
+            Final_Num_Bin = Final_Num_Bin + "0";
+            System.out.println("Final_Num_Bin 5 "+Final_Num_Bin);
+            Final_Num_Bin = Final_Num_Bin + String.format("%6S", Integer.toBinaryString(64 - Math.abs(exponent)).replace(' ', '0'));
+            System.out.println("Final_Num_Bin 6 "+Final_Num_Bin);
+        }
+
+        Final_Num_Bin = Final_Num_Bin + String.format("%8S", Integer.toBinaryString(mantissa).replace(' ', '0'));
+        System.out.println("Final_Num_Bin 7 "+Final_Num_Bin);
+        System.out.println("getShort of "+number+" :"+Integer.parseInt(Final_Num_Bin,2));
+        return (short) Integer.parseInt(Final_Num_Bin, 2);
+    }
+    
     private void Store_plusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Store_plusActionPerformed
         memory[MAR] = MBR;
-        System.out.println("MAR: "+MAR);
+        
         MAR++;
         Clear();
-        System.out.println("MAR after St+: "+MAR);
+        
         String MAR_binary = Integer.toBinaryString(MAR);
-        System.out.println("MAR after St+ binary: "+MAR_binary);
+        
         if (MAR_binary.length()>=1 && MAR_binary.charAt(MAR_binary.length()-1)=='1'){
             MAR_0.setBackground(Color.yellow);
         }
@@ -4965,16 +6523,16 @@ public class Simulator extends javax.swing.JFrame {
         }
         String st;
         try {
-            int flag_PC = 0;
+            short flag_PC = 0;
             while ((st = br.readLine()) != null)
             {
                 String[] content = st.split(" ");
                 int location = Integer.parseInt(content[0], 16); 
                 int value = Integer.parseInt(content[1], 16); 
-                memory[location] = value;
+                memory[location] = (short) value;
                 if( flag_PC == 0){
                     flag_PC++;
-                    PC = location;
+                    PC = (short) location;
                     Populate_PC();
                 }
             }
@@ -5122,10 +6680,41 @@ public class Simulator extends javax.swing.JFrame {
     }//GEN-LAST:event_Clear_LEDsActionPerformed
 
     private void LoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadActionPerformed
-        MBR = memory[MAR];
+        MBR = (short) memory[MAR];
+        
         Populate_MBR();
     }//GEN-LAST:event_LoadActionPerformed
 
+    public void Populate_CC(){
+        if(CC0==1){
+            CC_0.setBackground(Color.yellow);
+        }
+        else{
+            CC_0.setBackground(Color.white);
+        }
+        
+        if(CC1==1){
+            CC_1.setBackground(Color.yellow);
+        }
+        else{
+            CC_1.setBackground(Color.white);
+        }
+        
+        if(CC2==1){
+            CC_2.setBackground(Color.yellow);
+        }
+        else{
+            CC_2.setBackground(Color.white);
+        }
+        
+        if(CC3==1){
+            
+            CC_3.setBackground(Color.yellow);
+        }
+        else{
+            CC_3.setBackground(Color.white);
+        }
+    }
     public void Populate_R0(){
         String R0_binary = Integer.toBinaryString(R0);
         if (R0_binary.length()>=1 && R0_binary.charAt(R0_binary.length()-1)=='1'){
@@ -5223,6 +6812,206 @@ public class Simulator extends javax.swing.JFrame {
         }
         else{
             R0_15.setBackground(Color.decode("#F2F2F2"));
+        }
+    }
+    
+    public void Populate_FR0(){
+        String FR0_binary = Integer.toBinaryString(FR0);
+        if (FR0_binary.length()>=1 && FR0_binary.charAt(FR0_binary.length()-1)=='1'){
+            FR0_0.setBackground(Color.yellow);
+        }
+        else{
+            FR0_0.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=2 && FR0_binary.charAt(FR0_binary.length()-2)=='1'){
+            FR0_1.setBackground(Color.yellow);
+        }
+        else{
+            FR0_1.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=3 && FR0_binary.charAt(FR0_binary.length()-3)=='1'){
+            FR0_2.setBackground(Color.yellow);
+        }
+        else{
+            FR0_2.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=4 && FR0_binary.charAt(FR0_binary.length()-4)=='1'){
+            FR0_3.setBackground(Color.yellow);
+        }
+        else{
+            FR0_3.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=5 && FR0_binary.charAt(FR0_binary.length()-5)=='1'){
+            FR0_4.setBackground(Color.yellow);
+        }
+        else{
+            FR0_4.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=6 && FR0_binary.charAt(FR0_binary.length()-6)=='1'){
+            FR0_5.setBackground(Color.yellow);
+        }
+        else{
+            FR0_5.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=7 && FR0_binary.charAt(FR0_binary.length()-7)=='1'){
+            FR0_6.setBackground(Color.yellow);
+        }
+        else{
+            FR0_6.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=8 && FR0_binary.charAt(FR0_binary.length()-8)=='1'){
+            FR0_7.setBackground(Color.yellow);
+        }
+        else{
+            FR0_7.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=9 && FR0_binary.charAt(FR0_binary.length()-9)=='1'){
+            FR0_8.setBackground(Color.yellow);
+        }
+        else{
+            FR0_8.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=10 && FR0_binary.charAt(FR0_binary.length()-10)=='1'){
+            FR0_9.setBackground(Color.yellow);
+        }
+        else{
+            FR0_9.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=11 && FR0_binary.charAt(FR0_binary.length()-11)=='1'){
+            FR0_10.setBackground(Color.yellow);
+        }
+        else{
+            FR0_10.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=12 && FR0_binary.charAt(FR0_binary.length()-12)=='1'){
+            FR0_11.setBackground(Color.yellow);
+        }
+        else{
+            FR0_11.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=13 && FR0_binary.charAt(FR0_binary.length()-13)=='1'){
+            FR0_12.setBackground(Color.yellow);
+        }
+        else{
+            FR0_12.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=14 && FR0_binary.charAt(FR0_binary.length()-14)=='1'){
+            FR0_13.setBackground(Color.yellow);
+        }
+        else{
+            FR0_13.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=15 && FR0_binary.charAt(FR0_binary.length()-15)=='1'){
+            FR0_14.setBackground(Color.yellow);
+        }
+        else{
+            FR0_14.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR0_binary.length()>=16 && FR0_binary.charAt(FR0_binary.length()-16)=='1'){
+            FR0_15.setBackground(Color.yellow);
+        }
+        else{
+            FR0_15.setBackground(Color.decode("#F2F2F2"));
+        }
+    }
+        
+    public void Populate_FR1(){
+        String FR1_binary = Integer.toBinaryString(FR1);
+        if (FR1_binary.length()>=1 && FR1_binary.charAt(FR1_binary.length()-1)=='1'){
+            FR1_0.setBackground(Color.yellow);
+        }
+        else{
+            FR1_0.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=2 && FR1_binary.charAt(FR1_binary.length()-2)=='1'){
+            FR1_1.setBackground(Color.yellow);
+        }
+        else{
+            FR1_1.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=3 && FR1_binary.charAt(FR1_binary.length()-3)=='1'){
+            FR1_2.setBackground(Color.yellow);
+        }
+        else{
+            FR1_2.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=4 && FR1_binary.charAt(FR1_binary.length()-4)=='1'){
+            FR1_3.setBackground(Color.yellow);
+        }
+        else{
+            FR1_3.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=5 && FR1_binary.charAt(FR1_binary.length()-5)=='1'){
+            FR1_4.setBackground(Color.yellow);
+        }
+        else{
+            FR1_4.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=6 && FR1_binary.charAt(FR1_binary.length()-6)=='1'){
+            FR1_5.setBackground(Color.yellow);
+        }
+        else{
+            FR1_5.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=7 && FR1_binary.charAt(FR1_binary.length()-7)=='1'){
+            FR1_6.setBackground(Color.yellow);
+        }
+        else{
+            FR1_6.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=8 && FR1_binary.charAt(FR1_binary.length()-8)=='1'){
+            FR1_7.setBackground(Color.yellow);
+        }
+        else{
+            FR1_7.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=9 && FR1_binary.charAt(FR1_binary.length()-9)=='1'){
+            FR1_8.setBackground(Color.yellow);
+        }
+        else{
+            FR1_8.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=10 && FR1_binary.charAt(FR1_binary.length()-10)=='1'){
+            FR1_9.setBackground(Color.yellow);
+        }
+        else{
+            FR1_9.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=11 && FR1_binary.charAt(FR1_binary.length()-11)=='1'){
+            FR1_10.setBackground(Color.yellow);
+        }
+        else{
+            FR1_10.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=12 && FR1_binary.charAt(FR1_binary.length()-12)=='1'){
+            FR1_11.setBackground(Color.yellow);
+        }
+        else{
+            FR1_11.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=13 && FR1_binary.charAt(FR1_binary.length()-13)=='1'){
+            FR1_12.setBackground(Color.yellow);
+        }
+        else{
+            FR1_12.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=14 && FR1_binary.charAt(FR1_binary.length()-14)=='1'){
+            FR1_13.setBackground(Color.yellow);
+        }
+        else{
+            FR1_13.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=15 && FR1_binary.charAt(FR1_binary.length()-15)=='1'){
+            FR1_14.setBackground(Color.yellow);
+        }
+        else{
+            FR1_14.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (FR1_binary.length()>=16 && FR1_binary.charAt(FR1_binary.length()-16)=='1'){
+            FR1_15.setBackground(Color.yellow);
+        }
+        else{
+            FR1_15.setBackground(Color.decode("#F2F2F2"));
         }
     }
     
@@ -5328,7 +7117,7 @@ public class Simulator extends javax.swing.JFrame {
     
     public void Populate_IR(){
         String IR_binary = Integer.toBinaryString(IR);
-        System.out.println("IR: "+IR);
+        
         if (IR_binary.length()>=1 && IR_binary.charAt(IR_binary.length()-1)=='1'){
             IR_0.setBackground(Color.yellow);
         }
@@ -6179,10 +7968,13 @@ public class Simulator extends javax.swing.JFrame {
         }
     }
     
-    public int getAddress(int x){
-        String x_binary = Integer.toBinaryString(x);
-        int address = 0;
-        System.out.println("x_binary"+x_binary+" length: "+x_binary.length());
+    public short getAddress(short x){
+        String x_binary = Integer.toBinaryString(x & 0xFFFF);
+        if (x_binary.length()==32){
+            x_binary=x_binary.substring(16,32);
+        }
+        short address = 0;
+        
         if(x_binary.length() >= 5 && x_binary.charAt(x_binary.length()-5) == '1')
         {
             address += Math.pow(2,4);
@@ -6206,722 +7998,539 @@ public class Simulator extends javax.swing.JFrame {
         return address;
     }
     
-    private void SSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SSActionPerformed
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Clear();
-                Populate_PC();
-                IR = memory[PC];
-                Populate_IR();System.out.println("IR: "+IR);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                }   
-                
-                int flag_GPR = 0, flag_IXR = 0, flag_I = 0;
-                //MAR = PC;
-                
-                if(IR == 0)   //Halt
-                {
-                    MAR = PC;
-                    Populate_MAR();
-                    
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+    public void ClearCacheBg(){
+        jLabel_Tag0.setBackground(Color.white);
+        Tag_0.setBackground(Color.white);
+        Value_0.setBackground(Color.white);
+        jLabel_Tag1.setBackground(Color.white);
+        Tag_1.setBackground(Color.white);
+        Value_1.setBackground(Color.white);
+        jLabel_Tag2.setBackground(Color.white);
+        Tag_2.setBackground(Color.white);
+        Value_2.setBackground(Color.white);
+        jLabel_Tag3.setBackground(Color.white);
+        Tag_3.setBackground(Color.white);
+        Value_3.setBackground(Color.white);
+        jLabel_Tag4.setBackground(Color.white);
+        Tag_4.setBackground(Color.white);
+        Value_4.setBackground(Color.white);
+        jLabel_Tag5.setBackground(Color.white);
+        Tag_5.setBackground(Color.white);
+        Value_5.setBackground(Color.white);
+        jLabel_Tag6.setBackground(Color.white);
+        Tag_6.setBackground(Color.white);
+        Value_6.setBackground(Color.white);
+        jLabel_Tag7.setBackground(Color.white);
+        Tag_7.setBackground(Color.white);
+        Value_7.setBackground(Color.white);
+        jLabel_Tag8.setBackground(Color.white);
+        Tag_8.setBackground(Color.white);
+        Value_8.setBackground(Color.white);
+        jLabel_Tag9.setBackground(Color.white);
+        Tag_9.setBackground(Color.white);
+        Value_9.setBackground(Color.white);
+        jLabel_Tag10.setBackground(Color.white);
+        Tag_10.setBackground(Color.white);
+        Value_10.setBackground(Color.white);
+        jLabel_Tag11.setBackground(Color.white);
+        Tag_11.setBackground(Color.white);
+        Value_11.setBackground(Color.white);
+        jLabel_Tag12.setBackground(Color.white);
+        Tag_12.setBackground(Color.white);
+        Value_12.setBackground(Color.white);
+        jLabel_Tag13.setBackground(Color.white);
+        Tag_13.setBackground(Color.white);
+        Value_13.setBackground(Color.white);
+        jLabel_Tag14.setBackground(Color.white);
+        Tag_14.setBackground(Color.white);
+        Value_14.setBackground(Color.white);
+        jLabel_Tag15.setBackground(Color.white);
+        Tag_15.setBackground(Color.white);
+        Value_15.setBackground(Color.white);
+    }
+    
+    public void UpdateCache(){
+        ClearCacheBg();
+        if(FIFO.size()<16){
+            for(short i =0;i<FIFO.size();i++){
+                if(cache[i]!=null && cache[i].Address==PC){
+                    ConsoleLog.append("Cache Hit!!\n");
+                    System.out.println("hit i: "+i+"\n");
+                    switch (i) {
+                        case 0 -> {
+                            jLabel_Tag0.setBackground(Color.green);
+                            Tag_0.setBackground(Color.green);
+                            Value_0.setBackground(Color.green);
+                        }
+                        case 1 -> {
+                            jLabel_Tag1.setBackground(Color.green);
+                            Tag_1.setBackground(Color.green);
+                            Value_1.setBackground(Color.green);
+                        }
+                        case 2 -> {
+                            jLabel_Tag2.setBackground(Color.green);
+                            Tag_2.setBackground(Color.green);
+                            Value_2.setBackground(Color.green);
+                        }
+                        case 3 -> {
+                            jLabel_Tag3.setBackground(Color.green);
+                            Tag_3.setBackground(Color.green);
+                            Value_3.setBackground(Color.green);
+                        }
+                        case 4 -> {
+                            jLabel_Tag4.setBackground(Color.green);
+                            Tag_4.setBackground(Color.green);
+                            Value_4.setBackground(Color.green);
+                        }
+                        case 5 -> {
+                            jLabel_Tag5.setBackground(Color.green);
+                            Tag_5.setBackground(Color.green);
+                            Value_5.setBackground(Color.green);
+                        }
+                        case 6 -> {
+                            jLabel_Tag6.setBackground(Color.green);
+                            Tag_6.setBackground(Color.green);
+                            Value_6.setBackground(Color.green);
+                        }
+                        case 7 -> {
+                            jLabel_Tag7.setBackground(Color.green);
+                            Tag_7.setBackground(Color.green);
+                            Value_7.setBackground(Color.green);
+                        }
+                        case 8 -> {
+                            jLabel_Tag8.setBackground(Color.green);
+                            Tag_8.setBackground(Color.green);
+                            Value_8.setBackground(Color.green);
+                        }
+                        case 9 -> {
+                            jLabel_Tag9.setBackground(Color.green);
+                            Tag_9.setBackground(Color.green);
+                            Value_9.setBackground(Color.green);
+                        }
+                        case 10 -> {
+                            jLabel_Tag10.setBackground(Color.green);
+                            Tag_10.setBackground(Color.green);
+                            Value_10.setBackground(Color.green);
+                        }
+                        case 11 -> {
+                            jLabel_Tag11.setBackground(Color.green);
+                            Tag_11.setBackground(Color.green);
+                            Value_11.setBackground(Color.green);
+                        }
+                        case 12 -> {
+                            jLabel_Tag12.setBackground(Color.green);
+                            Tag_12.setBackground(Color.green);
+                            Value_12.setBackground(Color.green);
+                        }
+                        case 13 -> {
+                            jLabel_Tag13.setBackground(Color.green);
+                            Tag_13.setBackground(Color.green);
+                            Value_13.setBackground(Color.green);
+                        }
+                        case 14 -> {
+                            jLabel_Tag14.setBackground(Color.green);
+                            Tag_14.setBackground(Color.green);
+                            Value_14.setBackground(Color.green);
+                        }
+                        case 15 -> {
+                            jLabel_Tag15.setBackground(Color.green);
+                            Tag_15.setBackground(Color.green);
+                            Value_15.setBackground(Color.green);
+                        }
+                        default -> {
+                        }
                     }
-                    
-                    Halt_Display.setBackground(Color.yellow);
-                    
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    PC++;
-                    Populate_PC();
                     return;
                 }
-                
-                String IR_binary = Integer.toBinaryString(IR);
-                System.out.println(IR_binary.length());
-                if(IR_binary.length() <= 10)
-                {
-                    MBR = IR;
-                    
-                    MAR = PC;
-                    Populate_MAR();
-                    
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(FIFO.size()==0) { 
+                Tag_0.setText(Integer.toString(PC,2));
+                Value_0.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag0.setBackground(Color.red);
+                Tag_0.setBackground(Color.red);
+                Value_0.setBackground(Color.red);
+            }
+            else if(FIFO.size()==1) { 
+                Tag_1.setText(Integer.toString(PC,2));
+                Value_1.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag1.setBackground(Color.red);
+                Tag_1.setBackground(Color.red);
+                Value_1.setBackground(Color.red);
+            }
+            else if(FIFO.size()==2) { 
+                Tag_2.setText(Integer.toString(PC,2));
+                Value_2.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag2.setBackground(Color.red);
+                Tag_2.setBackground(Color.red);
+                Value_2.setBackground(Color.red);
+            }
+            else if(FIFO.size()==3) { 
+                Tag_3.setText(Integer.toString(PC,2));
+                Value_3.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag3.setBackground(Color.red);
+                Tag_3.setBackground(Color.red);
+                Value_3.setBackground(Color.red);
+            }
+            else if(FIFO.size()==4) { 
+                Tag_4.setText(Integer.toString(PC,2));
+                Value_4.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag4.setBackground(Color.red);
+                Tag_4.setBackground(Color.red);
+                Value_4.setBackground(Color.red);
+            }
+            else if(FIFO.size()==5) { 
+                Tag_5.setText(Integer.toString(PC,2));
+                Value_5.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag5.setBackground(Color.red);
+                Tag_5.setBackground(Color.red);
+                Value_5.setBackground(Color.red);
+            }
+            else if(FIFO.size()==6) { 
+                Tag_6.setText(Integer.toString(PC,2));
+                Value_6.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag6.setBackground(Color.red);
+                Tag_6.setBackground(Color.red);
+                Value_6.setBackground(Color.red);
+            }
+            else if(FIFO.size()==7) { 
+                Tag_7.setText(Integer.toString(PC,2));
+                Value_7.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag7.setBackground(Color.red);
+                Tag_7.setBackground(Color.red);
+                Value_7.setBackground(Color.red);
+            }
+            else if(FIFO.size()==8) { 
+                Tag_8.setText(Integer.toString(PC,2));
+                Value_8.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag8.setBackground(Color.red);
+                Tag_8.setBackground(Color.red);
+                Value_8.setBackground(Color.red);
+            }
+            else if(FIFO.size()==9) { 
+                Tag_9.setText(Integer.toString(PC,2));
+                Value_9.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag9.setBackground(Color.red);
+                Tag_9.setBackground(Color.red);
+                Value_9.setBackground(Color.red);
+            }
+            else if(FIFO.size()==10) { 
+                Tag_10.setText(Integer.toString(PC,2));
+                Value_10.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag10.setBackground(Color.red);
+                Tag_10.setBackground(Color.red);
+                Value_10.setBackground(Color.red);
+            }
+            else if(FIFO.size()==11) { 
+                Tag_11.setText(Integer.toString(PC,2));
+                Value_11.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag11.setBackground(Color.red);
+                Tag_11.setBackground(Color.red);
+                Value_11.setBackground(Color.red);
+            }
+            else if(FIFO.size()==12) { 
+                Tag_12.setText(Integer.toString(PC,2));
+                Value_12.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag12.setBackground(Color.red);
+                Tag_12.setBackground(Color.red);
+                Value_12.setBackground(Color.red);
+            }
+            else if(FIFO.size()==13) { 
+                Tag_13.setText(Integer.toString(PC,2));
+                Value_13.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag13.setBackground(Color.red);
+                Tag_13.setBackground(Color.red);
+                Value_13.setBackground(Color.red);
+            }
+            else if(FIFO.size()==14) { 
+                Tag_14.setText(Integer.toString(PC,2));
+                Value_14.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag14.setBackground(Color.red);
+                Tag_14.setBackground(Color.red);
+                Value_14.setBackground(Color.red);
+            }
+            else if(FIFO.size()==15) { 
+                Tag_15.setText(Integer.toString(PC,2));
+                Value_15.setText(Integer.toString(Math.abs(IR),2));
+                jLabel_Tag15.setBackground(Color.red);
+                Tag_15.setBackground(Color.red);
+                Value_15.setBackground(Color.red);
+            }
+            FIFO.add(PC);
+            System.out.println("Miss i: "+(FIFO.size()-1)+"\n");
+            cache[FIFO.size()-1]=new Cache();
+            cache[FIFO.size()-1].Address = PC;
+            cache[FIFO.size()-1].Data = IR;
+            ConsoleLog.append("Cache Miss!\n");
+        }
+        else{
+            int hit=0;
+            for(int i = 0;i<FIFO.size();i++){
+                if(cache[i]!=null && cache[i].Address==PC){
+                    ConsoleLog.append("Cache Hit!!\n");
+                    System.out.println("Hit2: "+i+"\n");
+                    hit++;
+                    if(i==0){
+                        jLabel_Tag0.setBackground(Color.green);
+                        Tag_0.setBackground(Color.green);
+                        Value_0.setBackground(Color.green);
+                        return;
                     }
-                    Populate_MBR();
+                    else if(i==1){
+                        jLabel_Tag1.setBackground(Color.green);
+                        Tag_1.setBackground(Color.green);
+                        Value_1.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==2){
+                        jLabel_Tag2.setBackground(Color.green);
+                        Tag_2.setBackground(Color.green);
+                        Value_2.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==3){
+                        jLabel_Tag3.setBackground(Color.green);
+                        Tag_3.setBackground(Color.green);
+                        Value_3.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==4){
+                        jLabel_Tag4.setBackground(Color.green);
+                        Tag_4.setBackground(Color.green);
+                        Value_4.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==5){
+                        jLabel_Tag5.setBackground(Color.green);
+                        Tag_5.setBackground(Color.green);
+                        Value_5.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==6){
+                        jLabel_Tag6.setBackground(Color.green);
+                        Tag_6.setBackground(Color.green);
+                        Value_6.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==7){
+                        jLabel_Tag7.setBackground(Color.green);
+                        Tag_7.setBackground(Color.green);
+                        Value_7.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==8){
+                        jLabel_Tag8.setBackground(Color.green);
+                        Tag_8.setBackground(Color.green);
+                        Value_8.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==9){
+                        jLabel_Tag9.setBackground(Color.green);
+                        Tag_9.setBackground(Color.green);
+                        Value_9.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==10){
+                        jLabel_Tag10.setBackground(Color.green);
+                        Tag_10.setBackground(Color.green);
+                        Value_10.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==11){
+                        jLabel_Tag11.setBackground(Color.green);
+                        Tag_11.setBackground(Color.green);
+                        Value_11.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==12){
+                        jLabel_Tag12.setBackground(Color.green);
+                        Tag_12.setBackground(Color.green);
+                        Value_12.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==13){
+                        jLabel_Tag13.setBackground(Color.green);
+                        Tag_13.setBackground(Color.green);
+                        Value_13.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==14){
+                        jLabel_Tag14.setBackground(Color.green);
+                        Tag_14.setBackground(Color.green);
+                        Value_14.setBackground(Color.green);
+                        return;
+                    }
+                    else if(i==15){
+                        jLabel_Tag15.setBackground(Color.green);
+                        Tag_15.setBackground(Color.green);
+                        Value_15.setBackground(Color.green);
+                        return;
+                    }
                 }
-                else
-                {
-                    //GPR
-                    if(IR_binary.charAt(IR_binary.length()-10)=='0' && IR_binary.charAt(IR_binary.length()-9)=='0')
+            }
+            if(hit==0)
+            {
+                short head = FIFO.remove();
+                int i;
+                System.out.println("miss head2: "+head+"\n");
+                for(i = 0;i<16;i++){
+                    if(cache[i]!=null && cache[i].Address==head)
                     {
-                        flag_GPR = 1;
-                        System.out.println("flag_GPR: "+flag_GPR);
-                    }
-                    else if(IR_binary.charAt(IR_binary.length()-10)=='0' && IR_binary.charAt(IR_binary.length()-9)=='1')
-                    {
-                        flag_GPR = 2;
-                        System.out.println("flag_GPR: "+flag_GPR);
-                    }
-                    else if(IR_binary.charAt(IR_binary.length()-10)=='1' && IR_binary.charAt(IR_binary.length()-9)=='0')
-                    {
-                        flag_GPR = 3;
-                        System.out.println("flag_GPR: "+flag_GPR);
-                    }
-                    else
-                    {
-                        flag_GPR = 4;
-                        System.out.println("flag_GPR: "+flag_GPR);
-                    }
-                    
-                    //IXR
-                    if(IR_binary.charAt(IR_binary.length()-8)=='0' && IR_binary.charAt(IR_binary.length()-7)=='1')
-                    {
-                        flag_IXR = 1;
-                    }
-                    else if(IR_binary.charAt(IR_binary.length()-8)=='1' && IR_binary.charAt(IR_binary.length()-7)=='0')
-                    {
-                        flag_IXR = 2;
-                    }
-                    else if(IR_binary.charAt(IR_binary.length()-8)=='1' && IR_binary.charAt(IR_binary.length()-7)=='1')
-                    {
-                        flag_IXR = 3;
-                    }
-                    
-                    if(IR_binary.charAt(IR_binary.length()-6)=='1')
-                    {
-                        flag_I = 1;
-                    }
-                    
-                    System.out.println("getAddress(IR):"+getAddress(IR));
-                    //LDR
-                    if(IR_binary.length() == 11 && IR_binary.charAt(0)=='1')
-                    {   System.out.println("LDR");
-                        //I = 0
-                        if(flag_I == 0)
+                        System.out.println("head2 i: "+i+"\n");
+                        switch (i) 
                         {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                System.out.println("getAddress(IR):"+getAddress(IR));
-                                MAR = getAddress(IR);
+                            case 0 -> {
+                                jLabel_Tag0.setBackground(Color.red);
+                                Tag_0.setBackground(Color.red);
+                                Value_0.setBackground(Color.red);
+                                Tag_0.setText(Integer.toString(PC,2));
+                                Value_0.setText(Integer.toString(Math.abs(IR),2));
+                                break;
                             }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 -> {
-                                        MAR = getAddress(IR) + X1;
-                                    }
-                                    case 2 -> {
-                                        MAR = getAddress(IR) + X2;
-                                    }
-                                    case 3 -> {
-                                        MAR = getAddress(IR) + X3;
-                                    }
-                                    default -> {
-                                    }
-                                }
+                            case 1 -> {
+                                jLabel_Tag1.setBackground(Color.red);
+                                Tag_1.setBackground(Color.red);
+                                Value_1.setBackground(Color.red);
+                                Tag_1.setText(Integer.toString(PC,2));
+                                Value_1.setText(Integer.toString(Math.abs(IR),2));
+                                break;
                             }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                            case 2 -> {
+                                jLabel_Tag2.setBackground(Color.red);
+                                Tag_2.setBackground(Color.red);
+                                Value_2.setBackground(Color.red);
+                                Tag_2.setText(Integer.toString(PC,2));
+                                Value_2.setText(Integer.toString(Math.abs(IR),2));
+                                break;
                             }
-                            Populate_MAR();
-                                
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                            case 3 -> {
+                                jLabel_Tag3.setBackground(Color.red);
+                                Tag_3.setBackground(Color.red);
+                                Value_3.setBackground(Color.red);
+                                Tag_3.setText(Integer.toString(PC,2));
+                                Value_3.setText(Integer.toString(Math.abs(IR),2));
+                                break;
                             }
-                            MBR = memory[MAR];
-                            Populate_MBR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                            case 4 -> {
+                                jLabel_Tag4.setBackground(Color.red);
+                                Tag_4.setBackground(Color.red);
+                                Value_4.setBackground(Color.red);
+                                Tag_4.setText(Integer.toString(PC,2));
+                                Value_4.setText(Integer.toString(Math.abs(IR),2));
+                                break;
                             }
-                            switch(flag_GPR)
-                            {
-                                case 1 -> {
-                                    R0 = memory[MAR];
-                                    Populate_R0();
-                                }
-                                case 2 -> {
-                                    R1 = memory[MAR];
-                                    Populate_R1();
-                                }
-                                case 3 -> {
-                                    R2 = memory[MAR];
-                                    Populate_R2();
-                                }
-                                case 4 -> {
-                                    R3 = memory[MAR];
-                                    Populate_R3();
-                                }
+                            case 5 -> {
+                                jLabel_Tag5.setBackground(Color.red);
+                                Tag_5.setBackground(Color.red);
+                                Value_5.setBackground(Color.red);
+                                Tag_5.setText(Integer.toString(PC,2));
+                                Value_5.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 6 -> {
+                                jLabel_Tag6.setBackground(Color.red);
+                                Tag_6.setBackground(Color.red);
+                                Value_6.setBackground(Color.red);
+                                Tag_6.setText(Integer.toString(PC,2));
+                                Value_6.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 7 -> {
+                                jLabel_Tag7.setBackground(Color.red);
+                                Tag_7.setBackground(Color.red);
+                                Value_7.setBackground(Color.red);
+                                Tag_7.setText(Integer.toString(PC,2));
+                                Value_7.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 8 -> {
+                                jLabel_Tag8.setBackground(Color.red);
+                                Tag_8.setBackground(Color.red);
+                                Value_8.setBackground(Color.red);
+                                Tag_8.setText(Integer.toString(PC,2));
+                                Value_8.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 9 -> {
+                                jLabel_Tag9.setBackground(Color.red);
+                                Tag_9.setBackground(Color.red);
+                                Value_9.setBackground(Color.red);
+                                Tag_9.setText(Integer.toString(PC,2));
+                                Value_9.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 10 -> {
+                                jLabel_Tag10.setBackground(Color.red);
+                                Tag_10.setBackground(Color.red);
+                                Value_10.setBackground(Color.red);
+                                Tag_10.setText(Integer.toString(PC,2));
+                                Value_10.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 11 -> {
+                                jLabel_Tag11.setBackground(Color.red);
+                                Tag_11.setBackground(Color.red);
+                                Value_11.setBackground(Color.red);
+                                Tag_11.setText(Integer.toString(PC,2));
+                                Value_11.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 12 -> {
+                                jLabel_Tag12.setBackground(Color.red);
+                                Tag_12.setBackground(Color.red);
+                                Value_12.setBackground(Color.red);
+                                Tag_12.setText(Integer.toString(PC,2));
+                                Value_12.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 13 -> {
+                                jLabel_Tag13.setBackground(Color.red);
+                                Tag_13.setBackground(Color.red);
+                                Value_13.setBackground(Color.red);
+                                Tag_13.setText(Integer.toString(PC,2));
+                                Value_13.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 14 -> {
+                                jLabel_Tag14.setBackground(Color.red);
+                                Tag_14.setBackground(Color.red);
+                                Value_14.setBackground(Color.red);
+                                Tag_14.setText(Integer.toString(PC,2));
+                                Value_14.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            case 15 -> {
+                                jLabel_Tag15.setBackground(Color.red);
+                                Tag_15.setBackground(Color.red);
+                                Value_15.setBackground(Color.red);
+                                Tag_15.setText(Integer.toString(PC,2));
+                                Value_15.setText(Integer.toString(Math.abs(IR),2));
+                                break;
+                            }
+                            default -> {
                             }
                         }
-                        else   //I = 1
-                        {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                MAR = memory[getAddress(IR)];
-                            }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 : MAR = memory[getAddress(IR) + X1];
-                                    case 2 : MAR = memory[getAddress(IR) + X2];
-                                    case 3 : MAR = memory[getAddress(IR) + X3];
-                                    default : {
-                                    }
-                                }
-                            }
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MAR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            MBR = memory[MAR];
-                            Populate_MBR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            switch(flag_GPR)
-                            {
-                                case 1 -> {
-                                    R0 = memory[MAR];
-                                    Populate_R0();
-                                }
-                                case 2 -> {
-                                    R1 = memory[MAR];
-                                    Populate_R1();
-                                }
-                                case 3 -> {
-                                    R2 = memory[MAR];
-                                    Populate_R2();
-                                }
-                                case 4 -> {
-                                    R3 = memory[MAR];
-                                    Populate_R3();
-                                }
-                            }
-                        }
+                        break;
                     }
-                    
-                    //STR
-                    if(IR_binary.length() == 12 &&
-                            IR_binary.charAt(0)=='1' &&
-                            IR_binary.charAt(1)=='0')
-                    {System.out.println("STR");
-                        //I = 0
-                        if(flag_I == 0)
-                        {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                System.out.println("getAddress(IR):"+getAddress(IR));
-                                MAR = getAddress(IR);
-                            }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 -> {
-                                        MAR = getAddress(IR) + X1;
-                                    }
-                                    case 2 -> {
-                                        MAR = getAddress(IR) + X2;
-                                    }
-                                    case 3 -> {
-                                        MAR = getAddress(IR) + X3;
-                                    }
-                                    default -> {
-                                    }
-                                }
-                            }
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MAR();
-                            switch(flag_GPR)
-                            {
-                                case 1 -> {
-                                    memory[MAR] = R0;
-                                    System.out.println("R0 here: "+R0);
-                                }
-                                case 2 -> {
-                                    memory[MAR] = R1;
-                                    System.out.println("R1 here: "+R1);
-                                }
-                                case 3 -> {
-                                    memory[MAR] = R2;
-                                    System.out.println("R2 here: "+R2);
-                                }
-                                case 4 -> {
-                                    memory[MAR] = R3;
-                                    System.out.println("R3 here: "+R3);
-                                }
-                            }
-                            MBR = memory[MAR];
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MBR();
-                        }
-                        else   //I = 1
-                        {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                MAR = memory[getAddress(IR)];
-                                System.out.println("getAddress(IR) here: "+getAddress(IR));
-                                System.out.println("MAR here: "+MAR);
-                            }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 : MAR = memory[getAddress(IR) + X1];
-                                    case 2 : MAR = memory[getAddress(IR) + X2];
-                                    case 3 : MAR = memory[getAddress(IR) + X3];
-                                    default : {
-                                    }
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MAR();
-                            
-                            switch(flag_GPR)
-                            {
-                                case 1 -> {
-                                    memory[MAR] = R0;
-                                }
-                                case 2 -> {
-                                    memory[MAR] = R1;
-                                }
-                                case 3 -> {
-                                    memory[MAR] = R2;
-                                }
-                                case 4 -> {
-                                    memory[MAR] = R3;
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            MBR = memory[MAR];
-                            Populate_MBR();
-                        }
-                    }
-                    
-                    //LDA
-                    if(IR_binary.length() == 12 &&
-                            IR_binary.charAt(0)=='1' &&
-                            IR_binary.charAt(1)=='1')
-                    {
-                        //I = 0
-                        if(flag_I == 0)
-                        {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                System.out.println("getAddress(IR):"+getAddress(IR));
-                                MAR = getAddress(IR);
-                            }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 -> {
-                                        MAR = getAddress(IR) + X1;
-                                    }
-                                    case 2 -> {
-                                        MAR = getAddress(IR) + X2;
-                                    }
-                                    case 3 -> {
-                                        MAR = getAddress(IR) + X3;
-                                    }
-                                    default -> {
-                                    }
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MAR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            MBR = memory[MAR];
-                            Populate_MBR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            switch(flag_GPR)
-                            {
-                                case 1 -> {
-                                    R0 = MAR;
-                                    Populate_R0();
-                                }
-                                case 2 -> {
-                                    R1 = MAR;
-                                    Populate_R1();
-                                }
-                                case 3 -> {
-                                    R2 = MAR;
-                                    Populate_R2();
-                                }
-                                case 4 -> {
-                                    R3 = MAR;
-                                    Populate_R3();
-                                }
-                            }
-                        }
-                        else   //I = 1
-                        {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                MAR = memory[getAddress(IR)];
-                            }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 : MAR = memory[getAddress(IR) + X1];
-                                    case 2 : MAR = memory[getAddress(IR) + X2];
-                                    case 3 : MAR = memory[getAddress(IR) + X3];
-                                    default : {
-                                    }
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MAR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            MBR = memory[MAR];
-                            Populate_MBR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            switch(flag_GPR)
-                            {
-                                case 1 -> {
-                                    R0 = MAR;
-                                    Populate_R0();
-                                }
-                                case 2 -> {
-                                    R1 = MAR;
-                                    Populate_R1();
-                                }
-                                case 3 -> {
-                                    R2 = MAR;
-                                    Populate_R2();
-                                }
-                                case 4 -> {
-                                    R3 = MAR;
-                                    Populate_R3();
-                                }
-                            }
-                        }
-                    }
-                    
-                    //LDX
-                    if(IR_binary.length() == 16 &&
-                            IR_binary.charAt(0)=='1' &&
-                            IR_binary.charAt(1)=='0' &&
-                            IR_binary.charAt(2)=='1' &&
-                            IR_binary.charAt(3)=='0' &&
-                            IR_binary.charAt(4)=='0' &&
-                            IR_binary.charAt(5)=='1')
-                    {
-                        //I = 0
-                        if(flag_I == 0)
-                        {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                System.out.println("getAddress(IR):"+getAddress(IR));
-                                MAR = getAddress(IR);
-                                System.out.println("MAR"+MAR);
-                            }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 -> {
-                                        MAR = getAddress(IR) + X1;
-                                        System.out.println("MAR1"+MAR);
-                                    }
-                                    case 2 -> {
-                                        MAR = getAddress(IR) + X2;
-                                        System.out.println("MAR2"+MAR);
-                                    }
-                                    case 3 -> {
-                                        MAR = getAddress(IR) + X3;
-                                        System.out.println("MAR3"+MAR);
-                                    }
-                                    default -> {
-                                    }
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MAR();
-                            
-                            MBR = memory[MAR];
-                            System.out.println("MBR"+MBR);
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MBR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            switch(flag_IXR)
-                            {
-                                case 1 -> {
-                                    X1 = MBR;
-                                    Populate_X1();
-                                }
-                                case 2 -> {
-                                    X2 = MBR;
-                                    Populate_X2();
-                                }
-                                case 3 -> {
-                                    X3 = MBR;
-                                    Populate_X3();
-                                }
-                            }
-                        }
-                        else   //I = 1
-                        {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                MAR = memory[getAddress(IR)];
-                            }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 : MAR = memory[getAddress(IR) + X1];
-                                    case 2 : MAR = memory[getAddress(IR) + X2];
-                                    case 3 : MAR = memory[getAddress(IR) + X3];
-                                    default : {
-                                    }
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MAR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            MBR = memory[MAR];
-                            Populate_MBR();
-                            
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            switch(flag_IXR)
-                            {
-                                case 1 -> {
-                                    X1 = MAR;
-                                    Populate_X1();
-                                }
-                                case 2 -> {
-                                    X2 = MAR;
-                                    Populate_X2();
-                                }
-                                case 3 -> {
-                                    X3 = MAR;
-                                    Populate_X3();
-                                }
-                            }
-                        }
-                    }
-                    
-                    //STX
-                    if(IR_binary.length() == 16 &&
-                            IR_binary.charAt(0)=='1' &&
-                            IR_binary.charAt(1)=='0' &&
-                            IR_binary.charAt(2)=='1' &&
-                            IR_binary.charAt(3)=='0' &&
-                            IR_binary.charAt(4)=='1' &&
-                            IR_binary.charAt(5)=='0')
-                    {
-                        //I = 0
-                        if(flag_I == 0)
-                        {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                System.out.println("getAddress(IR):"+getAddress(IR));
-                                MAR = getAddress(IR);
-                            }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 -> {
-                                        MAR = getAddress(IR) + X1;
-                                    }
-                                    case 2 -> {
-                                        MAR = getAddress(IR) + X2;
-                                    }
-                                    case 3 -> {
-                                        MAR = getAddress(IR) + X3;
-                                    }
-                                    default -> {
-                                    }
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MAR();
-                            switch(flag_IXR)
-                            {
-                                case 1 -> {
-                                    memory[MAR] = X1;
-                                }
-                                case 2 -> {
-                                    memory[MAR] = X2;
-                                }
-                                case 3 -> {
-                                    memory[MAR] = X3;
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            MBR = memory[MAR];
-                            Populate_MBR();
-                        }
-                        else   //I = 1
-                        {
-                            //No Indexing
-                            if(flag_IXR == 0)
-                            {
-                                MAR = memory[getAddress(IR)];
-                            }
-                            else  //Indexed
-                            {
-                                switch (flag_IXR) {
-                                    case 1 : MAR = memory[getAddress(IR) + X1];
-                                    case 2 : MAR = memory[getAddress(IR) + X2];
-                                    case 3 : MAR = memory[getAddress(IR) + X3];
-                                    default : {
-                                    }
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            Populate_MAR();
-                            
-                            switch(flag_IXR)
-                            {
-                                case 1 -> {
-                                    memory[MAR] = X1;
-                                }
-                                case 2 -> {
-                                    memory[MAR] = X2;
-                                }
-                                case 3 -> {
-                                    memory[MAR] = X3;
-                                }
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            MBR = memory[MAR];
-                            Populate_MBR();
-                        }
-                    }
-                }   
-                
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                PC++;
-                Populate_PC();
+                if(i==16)
+                {
+                    i--;
+                    System.out.println("New i: "+i+"\n");
+                }
+                FIFO.add(PC);
+                cache[i].Address = PC;
+                cache[i].Data = IR;
+                ConsoleLog.append("Cache Miss!\n");
+            }
+        }
+    }
+    
+    private void SSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SSActionPerformed
+        new Thread(() -> {
+            try {
+                ExecuteInstruction();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
             }
         }).start();
     }//GEN-LAST:event_SSActionPerformed
@@ -6934,724 +8543,3796 @@ public class Simulator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_OP_15ActionPerformed
 
+    public void ExecuteInstruction() throws InterruptedException{
+        Clear();
+        Populate_PC();
+        IR = memory[PC];
+        Populate_IR();
+        UpdateCache();
+        ConsoleLog.append("PC: "+Integer.toHexString(PC & 0xffff)+" Instruction: ");
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+
+        short flag_GPR = 0, flag_IXR = 0, flag_I = 0;
+        //MAR = PC;
+
+        if(IR == 0)   //Halt
+        {
+            MAR = PC;
+            Populate_MAR();
+            for(short i=0;i<20;i++) 
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            Halt_Display.setBackground(Color.yellow);
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            PC++;
+            Populate_PC();
+            Run_Display.setBackground(Color.white);
+            return;
+        }
+
+        String IR_binary = Integer.toBinaryString(IR & 0xFFFF);
+        if (IR_binary.length()==32){
+            IR_binary=IR_binary.substring(16,32);
+        }
+        
+        if(IR_binary.length() <= 10)
+        {
+            MBR = IR;
+
+            MAR = PC;
+            Populate_MAR();
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Populate_MBR();
+        }
+        else
+        {
+            //GPR
+            if(IR_binary.charAt(IR_binary.length()-10)=='0' && IR_binary.charAt(IR_binary.length()-9)=='0')
+            {
+                flag_GPR = 1;
+                
+            }
+            else if(IR_binary.charAt(IR_binary.length()-10)=='0' && IR_binary.charAt(IR_binary.length()-9)=='1')
+            {
+                flag_GPR = 2;
+                
+            }
+            else if(IR_binary.charAt(IR_binary.length()-10)=='1' && IR_binary.charAt(IR_binary.length()-9)=='0')
+            {
+                flag_GPR = 3;
+                
+            }
+            else
+            {
+                flag_GPR = 4;
+                
+            }
+
+            //IXR
+            if(IR_binary.charAt(IR_binary.length()-8)=='0' && IR_binary.charAt(IR_binary.length()-7)=='1')
+            {
+                flag_IXR = 1;
+            }
+            else if(IR_binary.charAt(IR_binary.length()-8)=='1' && IR_binary.charAt(IR_binary.length()-7)=='0')
+            {
+                flag_IXR = 2;
+            }
+            else if(IR_binary.charAt(IR_binary.length()-8)=='1' && IR_binary.charAt(IR_binary.length()-7)=='1')
+            {
+                flag_IXR = 3;
+            }
+
+            if(IR_binary.charAt(IR_binary.length()-6)=='1')
+            {
+                flag_I = 1;
+            }
+
+            
+            //LDR
+            if(IR_binary.length() == 11 && IR_binary.charAt(0)=='1')
+            {   
+                ConsoleLog.append("LDR ");
+                //I = 0
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("no Indexing I=0 ");
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                ConsoleLog.append("IX1 I=0 ");
+                                MAR = (short) (getAddress(IR) + X1);
+                                if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                ConsoleLog.append("IX2 I=0 ");
+                                MAR = (short) (getAddress(IR) + X2);
+                                if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                ConsoleLog.append("IX3 I=0 ");
+                                MAR = (short) (getAddress(IR) + X3);
+                                if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    switch(flag_GPR)
+                    {
+                        case 1 -> {
+                            ConsoleLog.append("R0\n");
+                            R0 = memory[MAR];
+                            Populate_R0();
+                        }
+                        case 2 -> {
+                            ConsoleLog.append("R1\n");
+                            R1 = memory[MAR];
+                            Populate_R1();
+                        }
+                        case 3 -> {
+                            ConsoleLog.append("R2\n");
+                            R2 = memory[MAR];
+                            Populate_R2();
+                        }
+                        case 4 -> {
+                            ConsoleLog.append("R3\n");
+                            R3 = memory[MAR];
+                            Populate_R3();
+                        }
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("no Indexing I=1 ");
+                        MAR = memory[getAddress(IR)];
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : ConsoleLog.append("IX1 I=1 ");MAR = memory[(getAddress(IR) + X1)];if(memoryOutofBoundCheck(MAR)) return;break;
+                            case 2 : ConsoleLog.append("IX2 I=1 ");MAR = memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;break;
+                            case 3 : ConsoleLog.append("IX3 I=1 ");MAR = memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;break;
+                            default : {
+                            }
+                        }
+                    }
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+                    
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+                    
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    switch(flag_GPR)
+                    {
+                        case 1 -> {
+                            ConsoleLog.append("R0\n");
+                            R0 = memory[MAR];
+                            Populate_R0();
+                        }
+                        case 2 -> {
+                            ConsoleLog.append("R1\n");
+                            R1 = memory[MAR];
+                            Populate_R1();
+                        }
+                        case 3 -> {
+                            ConsoleLog.append("R2\n");
+                            R2 = memory[MAR];
+                            Populate_R2();
+                        }
+                        case 4 -> {
+                            ConsoleLog.append("R3\n");
+                            R3 = memory[MAR];
+                            Populate_R3();
+                        }
+                    }
+                }
+            }
+
+            //STR
+            else if(IR_binary.length() == 12 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0')
+            {
+                ConsoleLog.append("STR ");
+                //I = 0
+                if(flag_I == 0)
+                {
+                    ConsoleLog.append("I=0 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("No Indexing ");
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                ConsoleLog.append("IX1 ");
+                                MAR = (short) (getAddress(IR) + X1);
+                                if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                ConsoleLog.append("IX2 ");
+                                MAR = (short) (getAddress(IR) + X2);
+                                if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                ConsoleLog.append("IX3 ");
+                                MAR = (short) (getAddress(IR) + X3);
+                                if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+                    switch(flag_GPR)
+                    {
+                        case 1 -> {
+                            ConsoleLog.append("R0\n");
+                            memory[MAR] = R0;
+                            
+                        }
+                        case 2 -> {
+                            ConsoleLog.append("R1\n");
+                            memory[MAR] = R1;
+                            
+                        }
+                        case 3 -> {
+                            ConsoleLog.append("R2\n");
+                            memory[MAR] = R2;
+                            
+                        }
+                        case 4 -> {
+                            ConsoleLog.append("R3\n");
+                            memory[MAR] = R3;
+                            
+                        }
+                    }
+                    MBR = memory[MAR];
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MBR();
+                }
+                else   //I = 1
+                {
+                    ConsoleLog.append("I=1 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("no indexing ");
+                        MAR = memory[getAddress(IR)];
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = memory[getAddress(IR) + X1];ConsoleLog.append("IX1 ");if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = memory[getAddress(IR) + X2];ConsoleLog.append("IX2 ");if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = memory[getAddress(IR) + X3];ConsoleLog.append("IX3 ");if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    switch(flag_GPR)
+                    {
+                        case 1 -> {
+                            ConsoleLog.append("R0\n");
+                            memory[MAR] = R0;
+                        }
+                        case 2 -> {
+                            ConsoleLog.append("R1\n");
+                            memory[MAR] = R1;
+                        }
+                        case 3 -> {
+                            ConsoleLog.append("R2\n");
+                            memory[MAR] = R2;
+                        }
+                        case 4 -> {
+                            ConsoleLog.append("R3\n");
+                            memory[MAR] = R3;
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+                }
+            }
+
+            //LDA
+            else if(IR_binary.length() == 12 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1')
+            {
+                //I = 0
+                ConsoleLog.append("LDA ");
+                if(flag_I == 0)
+                {
+                    ConsoleLog.append("I=0 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("no indexing ");
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);
+                                if(memoryOutofBoundCheck(MAR)) return;
+                                ConsoleLog.append("IX1 ");
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);
+                                if(memoryOutofBoundCheck(MAR)) return;
+                                ConsoleLog.append("IX2 ");
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);
+                                if(memoryOutofBoundCheck(MAR)) return;
+                                ConsoleLog.append("IX3 ");
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    switch(flag_GPR)
+                    {
+                        case 1 -> {
+                            R0 = MAR;
+                            Populate_R0();
+                            ConsoleLog.append("R0\n");
+                        }
+                        case 2 -> {
+                            R1 = MAR;
+                            Populate_R1();
+                            ConsoleLog.append("R1\n");
+                        }
+                        case 3 -> {
+                            R2 = MAR;
+                            Populate_R2();
+                            ConsoleLog.append("R2\n");
+                        }
+                        case 4 -> {
+                            R3 = MAR;
+                            Populate_R3();
+                            ConsoleLog.append("R3\n");
+                        }
+                    }
+                }
+                else   //I = 1
+                {
+                    ConsoleLog.append("I=1 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("No Indexing ");
+                        MAR = memory[getAddress(IR)];
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = memory[getAddress(IR) + X1];ConsoleLog.append("IX1 ");if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = memory[getAddress(IR) + X2];ConsoleLog.append("IX2 ");if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = memory[getAddress(IR) + X3];ConsoleLog.append("IX3 ");if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    switch(flag_GPR)
+                    {
+                        case 1 -> {
+                            R0 = MAR;
+                            Populate_R0();
+                            ConsoleLog.append("R0\n");
+                        }
+                        case 2 -> {
+                            R1 = MAR;
+                            Populate_R1();
+                            ConsoleLog.append("R1\n");
+                        }
+                        case 3 -> {
+                            R2 = MAR;
+                            Populate_R2();
+                            ConsoleLog.append("R2\n");
+                        }
+                        case 4 -> {
+                            R3 = MAR;
+                            Populate_R3();
+                            ConsoleLog.append("R3\n");
+                        }
+                    }
+                }
+            }
+
+            //LDX
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='0' &&
+                    IR_binary.charAt(5)=='1')
+            {
+                ConsoleLog.append("LDX ");
+                //I = 0
+                if(flag_I == 0)
+                {
+                    ConsoleLog.append("I=0 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("No Indexing ");
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                        
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR));
+                                if(memoryOutofBoundCheck(MAR)) return;
+                                ConsoleLog.append("IX1\n");
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR));
+                                if(memoryOutofBoundCheck(MAR)) return;
+                                ConsoleLog.append("IX2\n");
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR));
+                                if(memoryOutofBoundCheck(MAR)) return;
+                                ConsoleLog.append("IX3\n");
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    MBR = memory[MAR];
+                    
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    switch(flag_IXR)
+                    {
+                        case 1 -> {
+                            X1 = MBR;
+                            Populate_X1();
+                        }
+                        case 2 -> {
+                            X2 = MBR;
+                            Populate_X2();
+                        }
+                        case 3 -> {
+                            X3 = MBR;
+                            Populate_X3();
+                        }
+                    }
+                }
+                else   //I = 1
+                {
+                    
+                    ConsoleLog.append("I=1 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("No Indexing ");
+                        MAR = memory[getAddress(IR)];
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = memory[getAddress(IR)];ConsoleLog.append("IX1\n");if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = memory[getAddress(IR)];ConsoleLog.append("IX2\n");if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = memory[getAddress(IR)];ConsoleLog.append("IX3\n");if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    switch(flag_IXR)
+                    {
+                        case 1 -> {
+                            X1 = MAR;
+                            Populate_X1();
+                        }
+                        case 2 -> {
+                            X2 = MAR;
+                            Populate_X2();
+                        }
+                        case 3 -> {
+                            X3 = MAR;
+                            Populate_X3();
+                        }
+                    }
+                }
+            }
+
+            //STX
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='1' &&
+                    IR_binary.charAt(5)=='0')
+            {
+                ConsoleLog.append("STX ");
+                //I = 0
+                if(flag_I == 0)
+                {
+                    ConsoleLog.append("I=0 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("No Indexing ");
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);ConsoleLog.append("IX1\n");if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);ConsoleLog.append("IX2\n");if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);ConsoleLog.append("IX3\n");if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+                    switch(flag_IXR)
+                    {
+                        case 1 -> {
+                            memory[MAR] = X1;
+                        }
+                        case 2 -> {
+                            memory[MAR] = X2;
+                        }
+                        case 3 -> {
+                            memory[MAR] = X3;
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+                }
+                else   //I = 1
+                {
+                    ConsoleLog.append("I=1 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("No Indexing ");
+                        MAR = memory[getAddress(IR)];
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = memory[getAddress(IR) + X1];ConsoleLog.append("IX1\n");if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = memory[getAddress(IR) + X2];ConsoleLog.append("IX2\n");if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = memory[getAddress(IR) + X3];ConsoleLog.append("IX3\n");if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    switch(flag_IXR)
+                    {
+                        case 1 -> {
+                            memory[MAR] = X1;
+                        }
+                        case 2 -> {
+                            memory[MAR] = X2;
+                        }
+                        case 3 -> {
+                            memory[MAR] = X3;
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+                }
+            }
+            //JZ
+            else if(IR_binary.length() == 14 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='0')
+            {
+                short Rx=0;
+                ConsoleLog.append("JZ ");
+
+                //Check for Rx
+                if(IR_binary.charAt(4)=='0' && 
+                IR_binary.charAt(5)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                    ConsoleLog.append("R0 ");
+                }
+                else if(IR_binary.charAt(4)=='0' && 
+                IR_binary.charAt(5)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                    ConsoleLog.append("R1 ");
+                }
+                else if(IR_binary.charAt(4)=='1' && 
+                IR_binary.charAt(5)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                    ConsoleLog.append("R2 ");
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                    ConsoleLog.append("R3 ");
+                }
+                
+
+                //I = 0
+                if(flag_I == 0)
+                {
+                    ConsoleLog.append("I=0 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("No Indexing \n");
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);ConsoleLog.append("IX1\n");if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);ConsoleLog.append("IX2\n");if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);ConsoleLog.append("IX3\n");if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    ConsoleLog.append("I=1 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = memory[getAddress(IR)];
+                        if(memoryOutofBoundCheck(MAR)) return;
+                        ConsoleLog.append("No Indexing \n");
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = memory[getAddress(IR) + X1];ConsoleLog.append("IX1\n");if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = memory[getAddress(IR) + X2];ConsoleLog.append("IX2\n");if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = memory[getAddress(IR) + X3];ConsoleLog.append("IX3\n");if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                    
+                if(Rx==0)
+                {
+                    PC=(short) (MAR-1);
+                }
+            }
+
+            //JNE
+            else if(IR_binary.length() == 14 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='1')
+            {
+                short Rx=0;
+                ConsoleLog.append("JNE ");
+
+                //Check for Rx
+                if(IR_binary.charAt(4)=='0' && 
+                IR_binary.charAt(5)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                    ConsoleLog.append("R0 ");
+                }
+                else if(IR_binary.charAt(4)=='0' && 
+                IR_binary.charAt(5)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                    ConsoleLog.append("R1 ");
+                }
+                else if(IR_binary.charAt(4)=='1' && 
+                IR_binary.charAt(5)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                    ConsoleLog.append("R2 ");
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                    ConsoleLog.append("R3 ");
+                }
+                //I = 0
+                if(flag_I == 0)
+                {
+                    ConsoleLog.append("I=0 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("No Indexing \n");
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);ConsoleLog.append("IX1\n");if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);ConsoleLog.append("IX2\n");if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);ConsoleLog.append("IX3\n");if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    ConsoleLog.append("I=1 ");
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        ConsoleLog.append("No Indexing \n");
+                        MAR = memory[getAddress(IR)];
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = memory[getAddress(IR) + X1];ConsoleLog.append("IX1\n");if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = memory[getAddress(IR) + X2];ConsoleLog.append("IX2\n");if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = memory[getAddress(IR) + X3];ConsoleLog.append("IX3\n");if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if(Rx!=0){
+                    PC=(short) (MAR-1);
+                }
+            }
+
+            //JCC
+            else if(IR_binary.length() == 14 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0')
+            {
+                short CC=0;
+                ConsoleLog.append("JCC ");
+
+                //Check for Rx
+                if(IR_binary.charAt(4)=='0' && 
+                IR_binary.charAt(5)=='0') //CC = CC0
+                {
+                    CC=CC0;
+                    ConsoleLog.append("CC0 ");
+                }
+                else if(IR_binary.charAt(4)=='0' && 
+                IR_binary.charAt(5)=='1') //CC = CC1
+                {
+                    CC=CC1;
+                    ConsoleLog.append("CC1 ");
+                }
+                else if(IR_binary.charAt(4)=='1' && 
+                IR_binary.charAt(5)=='0') //CC = CC2
+                {
+                    CC=CC2;
+                    ConsoleLog.append("CC2 ");
+                }
+                else //Rx = R3
+                {
+                    CC=CC3;
+                    ConsoleLog.append("CC3 ");
+                }
+
+                if(CC==1){
+                    //I = 0
+                    if(flag_I == 0)
+                    {
+                        ConsoleLog.append("I=0");
+                        //No Indexing
+                        if(flag_IXR == 0)
+                        {
+                            ConsoleLog.append("No Indexing\n");
+                            MAR = getAddress(IR);
+                            if(memoryOutofBoundCheck(MAR)) return;
+                        }
+                        else  //Indexed
+                        {
+                            switch (flag_IXR) {
+                                case 1 -> {
+                                    MAR = (short) (getAddress(IR) + X1);ConsoleLog.append("IX1 \n");if(memoryOutofBoundCheck(MAR)) return;
+                                }
+                                case 2 -> {
+                                    MAR = (short) (getAddress(IR) + X2);ConsoleLog.append("IX2 \n");if(memoryOutofBoundCheck(MAR)) return;
+                                }
+                                case 3 -> {
+                                    MAR = (short) (getAddress(IR) + X3);ConsoleLog.append("IX3 \n");if(memoryOutofBoundCheck(MAR)) return;
+                                }
+                                default -> {
+                                }
+                            }
+                        }
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Populate_MAR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        MBR = memory[MAR];
+                        Populate_MBR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    else   //I = 1
+                    {
+                        //No Indexing
+                        if(flag_IXR == 0)
+                        {
+                            MAR = memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                        }
+                        else  //Indexed
+                        {
+                            switch (flag_IXR) {
+                                case 1 : MAR = memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                                case 2 : MAR = memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                                case 3 : MAR = memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                                default : {
+                                }
+                            }
+                        }
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Populate_MAR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        MBR = memory[MAR];
+                        Populate_MBR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    
+                    PC=(short) (MAR-1);
+                }
+            }
+
+            //JMA
+            else if(IR_binary.length() == 14 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='1')
+            {
+                ConsoleLog.append("JMA ");
+
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                PC=(short) (MAR-1);
+            }
+
+            //JSR
+            else if(IR_binary.length() == 14 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='0')
+            {
+                ConsoleLog.append("JSR ");
+
+                R3=(short) (PC+1);
+                Populate_R3();
+
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                PC=(short) (MAR-1);
+            }
+
+            //RFS
+            else if(IR_binary.length() == 14 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='1')
+            {
+                ConsoleLog.append("RFS ");
+                R0=getAddress(IR);
+                Populate_R0();
+                PC = (short) (R3-1);
+            }
+
+            //SOB
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='0')
+            {
+                ConsoleLog.append("SOB ");
+                short Rx=0, x=0;
+                
+                //Check for Rx
+                if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='0') //Rx = R0
+                {
+                    
+                    R0=(short) (R0-1);
+                    Rx=R0;
+                    x=0;
+                    Populate_R0();
+                }
+                else if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='1') //Rx = R1
+                {
+                    
+                    R1=(short) (R1-1);
+                    Rx=R1;
+                    x=1;
+                    Populate_R1();
+                }
+                else if(IR_binary.charAt(5)=='1' && 
+                IR_binary.charAt(6)=='0') //Rx = R2
+                {
+                    
+                    R2=(short) (R2-1);
+                    Rx=R2;
+                    x=2;
+                    Populate_R2();
+                }
+                else //Rx = R3
+                {
+                    
+                    R3=(short) (R3-1);
+                    
+                    Rx=R3;
+                    x=3;
+                    Populate_R3();
+                }
+                if(Rx>0){
+                    //I = 0
+                    if(flag_I == 0)
+                    {
+                        //No Indexing
+                        if(flag_IXR == 0)
+                        {
+                            
+                            MAR = getAddress(IR);
+                            if(memoryOutofBoundCheck(MAR)) return;
+                        }
+                        else  //Indexed
+                        {
+                            switch (flag_IXR) {
+                                case 1 -> {
+                                    MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                                }
+                                case 2 -> {
+                                    MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                                }
+                                case 3 -> {
+                                    MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                                }
+                                default -> {
+                                }
+                            }
+                        }
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Populate_MAR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        MBR = memory[MAR];
+                        Populate_MBR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    else   //I = 1
+                    {
+                        //No Indexing
+                        if(flag_IXR == 0)
+                        {
+                            MAR = memory[getAddress(IR)];
+                            if(memoryOutofBoundCheck(MAR)) return;
+                        }
+                        else  //Indexed
+                        {
+                            switch (flag_IXR) {
+                                case 1 : MAR = memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                                case 2 : MAR = memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                                case 3 : MAR = memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                                default : {
+                                }
+                            }
+                        }
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Populate_MAR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        MBR = memory[MAR];
+                        Populate_MBR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    
+                    PC=(short) (MAR-1);
+                }
+            }
+
+            //JGE
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='1')
+            {
+                short Rx=0;
+                ConsoleLog.append("JGE ");
+                //Check for Rx
+                if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                }
+                else if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                }
+                else if(IR_binary.charAt(5)=='1' && 
+                IR_binary.charAt(6)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                }
+                if(Rx>=0){
+                    //I = 0
+                    if(flag_I == 0)
+                    {
+                        //No Indexing
+                        if(flag_IXR == 0)
+                        {
+                            
+                            MAR = getAddress(IR);
+                            if(memoryOutofBoundCheck(MAR)) return;
+                        }
+                        else  //Indexed
+                        {
+                            switch (flag_IXR) {
+                                case 1 -> {
+                                    MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                                }
+                                case 2 -> {
+                                    MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                                }
+                                case 3 -> {
+                                    MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                                }
+                                default -> {
+                                }
+                            }
+                        }
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Populate_MAR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        MBR = memory[MAR];
+                        Populate_MBR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    else   //I = 1
+                    {
+                        //No Indexing
+                        if(flag_IXR == 0)
+                        {
+                            MAR = memory[getAddress(IR)];
+                            if(memoryOutofBoundCheck(MAR)) return;
+                        }
+                        else  //Indexed
+                        {
+                            switch (flag_IXR) {
+                                case 1 : MAR = memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                                case 2 : MAR = memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                                case 3 : MAR = memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                                default : {
+                                }
+                            }
+                        }
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Populate_MAR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        MBR = memory[MAR];
+                        Populate_MBR();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    
+                    PC=(short) (MAR-1);
+                }
+            }
+
+            //AMR
+            else if(IR_binary.length() == 13 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='0')
+            {
+                ConsoleLog.append("AMR ");
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = memory[getAddress(IR)];
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                short Rx=0;
+
+                //Check for Rx
+                if(IR_binary.charAt(3)=='0' && 
+                IR_binary.charAt(4)=='0') //Rx = R0
+                {
+                    R0=(short) (R0+memory[MAR]);
+                    Populate_R0();
+                    if(R0>=Math.pow(2,16)){
+                        CC0=1;
+                        Populate_CC();
+                    }
+                    else{
+                        CC0=0;
+                        Populate_CC();
+                    }
+                }
+                else if(IR_binary.charAt(3)=='0' && 
+                IR_binary.charAt(4)=='1') //Rx = R1
+                {
+                    R1=(short) (R1+memory[MAR]);
+                    Populate_R1();
+                    if(R1>=Math.pow(2,16)){
+                        CC0=1;
+                        Populate_CC();
+                    }
+                    else{
+                        CC0=0;
+                        Populate_CC();
+                    }
+                }
+                else if(IR_binary.charAt(3)=='1' && 
+                IR_binary.charAt(4)=='0') //Rx = R2
+                {
+                    R2=(short) (R2+memory[MAR]);
+                    Populate_R2();
+                    if(R2>=Math.pow(2,16)){
+                        CC0=1;
+                        Populate_CC();
+                    }
+                    else{
+                        CC0=0;
+                        Populate_CC();
+                    }
+                }
+                else //Rx = R3
+                {
+                    
+                    R3=(short) (R3+memory[MAR]);
+                    
+                    Populate_R3();
+                    if(R3>=Math.pow(2,16)){
+                        CC0=1;
+                        Populate_CC();
+                    }
+                    else{
+                        CC0=0;
+                        Populate_CC();
+                    }
+                }
+            }
+
+            //SMR
+            else if(IR_binary.length() == 13 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='1')
+            {
+                ConsoleLog.append("SMR ");
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = (short) memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = (short) memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = (short) memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = (short) memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                short Rx=0;
+
+                //Check for Rx
+                if(IR_binary.charAt(3)=='0' && 
+                IR_binary.charAt(4)=='0') //Rx = R0
+                {
+                    R0=(short) (R0-memory[MAR]);
+                    Populate_R0();
+                }
+                else if(IR_binary.charAt(3)=='0' && 
+                IR_binary.charAt(4)=='1') //Rx = R1
+                {
+                    R1=(short) (R1-memory[MAR]);
+                    Populate_R1();
+                }
+                else if(IR_binary.charAt(3)=='1' && 
+                IR_binary.charAt(4)=='0') //Rx = R2
+                {
+                    R2=(short) (R2-memory[MAR]);
+                    Populate_R2();
+                }
+                else //Rx = R3
+                {
+                    R3=(short) (R3-memory[MAR]);
+                    Populate_R3();
+                }
+            }
+
+            //AIR
+            else if(IR_binary.length() == 13 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='0')
+            {
+                ConsoleLog.append("AIR ");
+                short Immed=getAddress(IR);
+                //Check for Rx
+                if(Immed!=0)
+                {
+                    if(IR_binary.charAt(3)=='0' && 
+                    IR_binary.charAt(4)=='0') //Rx = R0
+                    {
+                        R0=(short) (R0+Immed);
+                        Populate_R0();
+                    }
+                    else if(IR_binary.charAt(3)=='0' && 
+                    IR_binary.charAt(4)=='1') //Rx = R1
+                    {
+                        R1=(short) (R1+Immed);
+                        Populate_R1();
+                    }
+                    else if(IR_binary.charAt(3)=='1' && 
+                    IR_binary.charAt(4)=='0') //Rx = R2
+                    {
+                        R2=(short) (R2+Immed);
+                        Populate_R2();
+                    }
+                    else //Rx = R3
+                    {
+                        R3=(short) (R3+Immed);
+                        Populate_R3();
+                    }
+                }
+            }
+
+            //SIR
+            else if(IR_binary.length() == 13 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='1')
+            {
+                ConsoleLog.append("SIR ");
+                short Immed=getAddress(IR);
+                //Check for Rx
+                if(Immed!=0)
+                {
+                    if(IR_binary.charAt(3)=='0' && 
+                    IR_binary.charAt(4)=='0') //Rx = R0
+                    {
+                        R0=(short) (R0-Immed);
+                        Populate_R0();
+                    }
+                    else if(IR_binary.charAt(3)=='0' && 
+                    IR_binary.charAt(4)=='1') //Rx = R1
+                    {
+                        R1=(short) (R1-Immed);
+                        Populate_R1();
+                    }
+                    else if(IR_binary.charAt(3)=='1' && 
+                    IR_binary.charAt(4)=='0') //Rx = R2
+                    {
+                        R2=(short) (R2-Immed);
+                        Populate_R2();
+                    }
+                    else //Rx = R3
+                    {
+                        R3=(short) (R3-Immed);
+                        Populate_R3();
+                    }
+                }
+            }
+
+            //MLT
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='0')
+            {
+                ConsoleLog.append("MLT ");
+                short Rx=0, Ry=0, x=0, y=0;
+
+                //Check for Rx
+                if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                    x=0;
+                    ConsoleLog.append("Rx=R0 ");
+                }
+                else if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                    x=1;
+                    ConsoleLog.append("Rx=R1 ");
+                }
+                else if(IR_binary.charAt(5)=='1' && 
+                IR_binary.charAt(6)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                    x=2;
+                    ConsoleLog.append("Rx=R2 ");
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                    x=3;
+                    ConsoleLog.append("Rx=R3 ");
+                }
+
+                //Check for Ry
+                if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='0') //Ry = R0
+                {
+                    Ry=R0;
+                    y=0;
+                    ConsoleLog.append("Ry=R0 ");
+                }
+                else if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='1') //Ry = R1
+                {
+                    Ry=R1;
+                    y=1;
+                    ConsoleLog.append("Ry=R1 ");
+                }
+                else if(IR_binary.charAt(7)=='1' && 
+                IR_binary.charAt(8)=='0') //Ry = R2
+                {
+                    Ry=R2;
+                    y=2;
+                    ConsoleLog.append("Ry=R2 ");
+                }
+                else //Rx = R3
+                {
+                    Ry=R3;
+                    y=3;
+                    ConsoleLog.append("Ry=R3 ");
+                }
+                
+                
+                int Mlt = Rx * Ry;
+                String Mlt_binary = String.format("%"+16+"s",Integer.toBinaryString(Mlt)).replaceAll(" ","0");
+                
+                if(Mlt>=Math.pow(2, 16)) {
+                    CC0=1;
+                    Populate_CC();
+                }
+                else{
+                    CC0=0;
+                    Populate_CC();
+                }
+                if(x==0){
+                    /*R0=Short.parseShort(Mlt_binary.substring(16,24),2);
+                    
+                    R1=Short.parseShort(Mlt_binary.substring(24,32),2);
+                    */
+                    R0=Short.parseShort(Mlt_binary.substring(0,8),2);
+                    
+                    R1=Short.parseShort(Mlt_binary.substring(8,16),2);
+                    
+                    Populate_R0();
+                    Populate_R1();
+                }
+                else if(x==2){
+                    /*R2=Short.parseShort(Mlt_binary.substring(16,24),2);
+                    
+                    R3=Short.parseShort(Mlt_binary.substring(24,32),2);
+                    */
+                    R2=Short.parseShort(Mlt_binary.substring(0,8),2);
+                    
+                    R3=Short.parseShort(Mlt_binary.substring(8,16),2);
+                    
+                    Populate_R2();
+                    Populate_R3();
+                }
+            }
+
+            //DVD
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='1')
+            {
+                ConsoleLog.append("DVD ");
+                short Rx=0, Ry=0, x=0, y=0;
+
+                //Check for Rx
+                if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                    x=0;
+                }
+                else if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                    x=1;
+                }
+                else if(IR_binary.charAt(5)=='1' && 
+                IR_binary.charAt(6)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                    x=2;
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                    x=3;
+                }
+
+                //Check for Ry
+                if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='0') //Ry = R0
+                {
+                    Ry=R0;
+                    y=0;
+                }
+                else if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='1') //Ry = R1
+                {
+                    Ry=R1;
+                    y=1;
+                }
+                else if(IR_binary.charAt(7)=='1' && 
+                IR_binary.charAt(8)=='0') //Ry = R2
+                {
+                    Ry=R2;
+                    y=2;
+                }
+                else //Rx = R3
+                {
+                    Ry=R3;
+                    y=3;
+                }
+
+                if(Ry == 0){
+                    CC2=1;
+                    Populate_CC();
+                }
+                else
+                {
+                    CC2=0;
+                    Populate_CC();
+                    short Quotient = (short) (Rx / Ry);
+                    short Remainder = (short) (Rx % Ry);
+                    if(x==0){
+                        R0 = Quotient;
+                        R1 = Remainder;
+                        Populate_R0();
+                        Populate_R1();
+                    }
+                    else if(x==2){
+                        R2 = Quotient;
+                        R3 = Remainder;
+                        Populate_R2();
+                        Populate_R3();
+                    }
+                }
+            }
+
+            //TRR
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='1' &&
+                    IR_binary.charAt(4)=='0')
+            {
+                ConsoleLog.append("TRR ");
+                short Rx=0, Ry=0, x=0, y=0;
+
+                //Check for Rx
+                if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                    x=0;
+                }
+                else if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                    x=1;
+                }
+                else if(IR_binary.charAt(5)=='1' && 
+                IR_binary.charAt(6)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                    x=2;
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                    x=3;
+                }
+
+                //Check for Ry
+                if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='0') //Ry = R0
+                {
+                    Ry=R0;
+                    y=0;
+                }
+                else if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='1') //Ry = R1
+                {
+                    Ry=R1;
+                    y=1;
+                }
+                else if(IR_binary.charAt(7)=='1' && 
+                IR_binary.charAt(8)=='0') //Ry = R2
+                {
+                    Ry=R2;
+                    y=2;
+                }
+                else //Rx = R3
+                {
+                    Ry=R3;
+                    y=3;
+                }
+
+                if(Rx == Ry){
+                    CC3=1;
+                    Populate_CC();
+                }
+                else{
+                    CC3=0;
+                    Populate_CC();
+                }
+            }
+
+            //AND
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='1' &&
+                    IR_binary.charAt(4)=='1')
+            {
+                ConsoleLog.append("AND ");
+                short Rx=0, Ry=0, x=0, y=0;
+
+                //Check for Rx
+                if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                    x=0;
+                }
+                else if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                    x=1;
+                }
+                else if(IR_binary.charAt(5)=='1' && 
+                IR_binary.charAt(6)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                    x=2;
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                    x=3;
+                }
+
+                //Check for Ry
+                if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='0') //Ry = R0
+                {
+                    Ry=R0;
+                    y=0;
+                }
+                else if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='1') //Ry = R1
+                {
+                    Ry=R1;
+                    y=1;
+                }
+                else if(IR_binary.charAt(7)=='1' && 
+                IR_binary.charAt(8)=='0') //Ry = R2
+                {
+                    Ry=R2;
+                    y=2;
+                }
+                else //Rx = R3
+                {
+                    Ry=R3;
+                    y=3;
+                }
+
+                Rx = (short) (Rx & Ry);
+                if(x == 0){
+                    R0=Rx;
+                    Populate_R0();
+                }
+                else if(x == 1){
+                    R1=Rx;
+                    Populate_R1();
+                }
+                else if(x == 2){
+                    R2=Rx;
+                    Populate_R2();
+                }
+                else{
+                    R3=Rx;
+                    Populate_R3();
+                }
+            }
+
+            //ORR
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='0')
+            {
+                ConsoleLog.append("ORR ");
+                short Rx=0, Ry=0, x=0, y=0;
+
+                //Check for Rx
+                if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                    x=0;
+                }
+                else if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                    x=1;
+                }
+                else if(IR_binary.charAt(5)=='1' && 
+                IR_binary.charAt(6)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                    x=2;
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                    x=3;
+                }
+
+                //Check for Ry
+                if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='0') //Ry = R0
+                {
+                    Ry=R0;
+                    y=0;
+                }
+                else if(IR_binary.charAt(7)=='0' && 
+                IR_binary.charAt(8)=='1') //Ry = R1
+                {
+                    Ry=R1;
+                    y=1;
+                }
+                else if(IR_binary.charAt(7)=='1' && 
+                IR_binary.charAt(8)=='0') //Ry = R2
+                {
+                    Ry=R2;
+                    y=2;
+                }
+                else //Rx = R3
+                {
+                    Ry=R3;
+                    y=3;
+                }
+
+                Rx = (short) (Rx | Ry);
+                if(x == 0){
+                    R0=Rx;
+                    Populate_R0();
+                }
+                else if(x == 1){
+                    R1=Rx;
+                    Populate_R1();
+                }
+                else if(x == 2){
+                    R2=Rx;
+                    Populate_R2();
+                }
+                else{
+                    R3=Rx;
+                    Populate_R3();
+                }
+            }
+
+            //NOT
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='1')
+            {
+                ConsoleLog.append("NOT ");
+                short Rx=0, x=0;
+
+                //Check for Rx
+                if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                    x=0;
+                }
+                else if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                    x=1;
+                }
+                else if(IR_binary.charAt(5)=='1' && 
+                IR_binary.charAt(6)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                    x=2;
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                    x=3;
+                }
+
+                Rx=(short) ~(Rx);
+                if(x == 0){
+                    R0=Rx;
+                    Populate_R0();
+                }
+                else if(x == 1){
+                    R1=Rx;
+                    Populate_R1();
+                }
+                else if(x == 2){
+                    R2=Rx;
+                    Populate_R2();
+                }
+                else{
+                    R3=Rx;
+                    Populate_R3();
+                }
+            }
+
+            //SRC
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='1' &&
+                    IR_binary.charAt(4)=='1')
+            {
+                ConsoleLog.append("SRC ");
+                short x=0, Count=getAddress(IR), LR=0, AL=0;
+                short Rx=0;
+
+                //Check for Rx
+                if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='0') //Rx = R0
+                {
+                    Rx=(short) R0;
+                    x=0;
+                }
+                else if(IR_binary.charAt(5)=='0' && 
+                IR_binary.charAt(6)=='1') //Rx = R1
+                {
+                    Rx=(short) R1;
+                    x=1;
+                }
+                else if(IR_binary.charAt(5)=='1' && 
+                IR_binary.charAt(6)=='0') //Rx = R2
+                {
+                    Rx=(short) R2;
+                    x=2;
+                }
+                else //Rx = R3
+                {
+                    Rx=(short) R3;
+                    x=3;
+                }
+
+                if((IR_binary.charAt(7)=='1' && IR_binary.charAt(8)=='1')||(IR_binary.charAt(7)=='0' && IR_binary.charAt(8)=='1')){ //Shift left, logically or Sift left, arithmetically
+                    Rx=(short) (Rx<<(short) Count);
+                    
+                }
+                else if(IR_binary.charAt(7)=='1' && IR_binary.charAt(8)=='0'){ //Shift right, arithmeticallyString Rx_bin = Integer.toBinaryString(Rx&0xFFFF);
+                    String Rx_bin = String.format("%"+16+"s",Integer.toBinaryString(Rx&0xFFFF)).replaceAll(" ","0");
+                    if(Rx_bin.charAt(16-Count)=='1'){
+                        CC1=1;
+                        Populate_CC();
+                    }
+                    else
+                    {
+                        CC1=0;
+                        Populate_CC();    
+                    }
+                    Rx=(short) (Rx>>(short) Count);
+                    
+                }
+                else{ //shift right, logically
+                    //Rx= (Rx>>> Count);
+                    /*short Rtemp=Rx;
+                    
+                    Rtemp= (short) (Rtemp >>> Count);
+                    Rx=(short) Rtemp;*/
+                    String Rx_bin = String.format("%"+16+"s",Integer.toBinaryString(Rx&0xFFFF)).replaceAll(" ","0");
+                    if(Rx_bin.charAt(16-Count)=='1'){
+                        CC1=1;
+                        Populate_CC();
+                    }
+                    else
+                    {
+                        CC1=0;
+                        Populate_CC();    
+                    }
+                    Rx=(short) (Rx>>>(short) Count);
+                    
+                }
+
+                switch (x) {
+                    case 0 -> {
+                        R0=Rx;
+                        Populate_R0();
+                    }
+                    case 1 -> {
+                        R1=Rx;
+                        Populate_R1();
+                    }
+                    case 2 -> {
+                        R2=Rx;
+                        Populate_R2();
+                    }
+                    default -> {
+                        R3=Rx;
+                        Populate_R3();
+                    }
+                }
+            }
+
+            //RRC
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='0' &&
+                    IR_binary.charAt(5)=='0')
+            {
+                ConsoleLog.append("RRC ");
+                short Rx=0, x=0, Count=getAddress(IR);
+
+                //Check for Rx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Rx = R0
+                {
+                    Rx=R0;
+                    x=0;
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Rx = R1
+                {
+                    Rx=R1;
+                    x=1;
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //Rx = R2
+                {
+                    Rx=R2;
+                    x=2;
+                }
+                else //Rx = R3
+                {
+                    Rx=R3;
+                    x=3;
+                }
+
+                if((IR_binary.charAt(7)=='1' && IR_binary.charAt(8)=='1')||(IR_binary.charAt(7)=='0' && IR_binary.charAt(8)=='1')){ //rotate left, logically or rotate left, arithmetically
+                    Rx=(short) ((Rx << Count) | (Rx >> (16 - Count)));
+                }
+                else{
+                    Rx=(short) ((Rx >> Count) | (Rx << (16 - Count)));
+                }
+                if(Rx>=Math.pow(2,16)){
+                    CC0=1;
+                    Populate_CC();
+                }
+                else{
+                    CC0=0;
+                    Populate_CC();
+                }
+
+                switch (x) {
+                    case 0 -> {
+                        R0=Rx;
+                        Populate_R0();
+                    }
+                    case 1 -> {
+                        R1=Rx;
+                        Populate_R1();
+                    }
+                    case 2 -> {
+                        R2=Rx;
+                        Populate_R2();
+                    }
+                    default -> {
+                        R3=Rx;
+                        Populate_R3();
+                    }
+                }
+            }
+            
+            //IN
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='1' &&
+                    IR_binary.charAt(4)=='0' &&
+                    IR_binary.charAt(5)=='1')
+            {
+                ConsoleLog.append("IN ");
+                short DevID=getAddress(IR);
+                Input.setBackground(Color.yellow);
+                if(DevID==0){
+                    while(InputSignal==0){
+                    }
+                }
+                else{
+                    ConsoleLog.append("Incorrect DEVID\n");
+                }
+                //Check for Rx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Rx = R0
+                {
+                    R0=InputVal;
+                    Populate_R0();
+                    ConsoleLog.append("R0\n");
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Rx = R1
+                {
+                    R1=InputVal;
+                    Populate_R1();
+                    ConsoleLog.append("R1\n");
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //Rx = R2
+                {
+                    R2=InputVal;
+                    Populate_R2();
+                    ConsoleLog.append("R2\n");
+                }
+                else //Rx = R3
+                {
+                    R3=InputVal;
+                    Populate_R3();
+                    ConsoleLog.append("R3\n");
+                }
+                InputSignal = 0;
+                
+                Thread.sleep(10);
+                Input.setBackground(Color.white);
+            }
+            
+            //OUT
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='1' &&
+                    IR_binary.charAt(4)=='1' &&
+                    IR_binary.charAt(5)=='0')
+            {
+                ConsoleLog.append("OUT\n");
+                
+                short DevID=getAddress(IR);
+                if(DevID!=1){
+                    ConsoleLog.append("Incorrect DEVID\n");
+                }
+                //Check for Rx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Rx = R0
+                {
+                    
+                    Printer.append(String.valueOf(Character.toString ((char) R0)));
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Rx = R1
+                {
+                    
+                    Printer.append(String.valueOf(Character.toString ((char) R1)));
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //Rx = R2
+                {
+                    
+                    Printer.append(String.valueOf(Character.toString ((char) R2)));
+                }
+                else //Rx = R3
+                {
+                    
+                    Printer.append(String.valueOf(Character.toString ((char) R3)));
+                }
+            }
+            
+            //CHK
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='1' &&
+                    IR_binary.charAt(4)=='1' &&
+                    IR_binary.charAt(5)=='1')
+            {
+                ConsoleLog.append("CHK ");
+                short DevID=getAddress(IR);
+                if(DevID!=0 || DevID!=1){
+                    ConsoleLog.append("Check DEVID\n");
+                }
+                //Check for Rx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Rx = R0
+                {
+                    R0=1;
+                    Populate_R0();
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Rx = R1
+                {
+                    R1=1;
+                    Populate_R1();
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //Rx = R2
+                {
+                    R2=1;
+                    Populate_R2();
+                }
+                else //Rx = R3
+                {
+                    R3=1;
+                    Populate_R3();
+                }
+            }
+            
+            // FADD
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='0' &&
+                    IR_binary.charAt(5)=='1')
+            {
+                ConsoleLog.append("FADD ");
+                short Fx=0;
+                int flag_F=-1;
+                //Check for Fx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Fx = FR0
+                {
+                    Fx=FR0;
+                    flag_F=0;
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Fx = FR1
+                {
+                    Fx=FR1;
+                    flag_F=1;
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                else //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = (short) memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = (short) memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = (short) memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = (short) memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                double FRVal = convertToFloat(Fx);
+                System.out.println("FRVal: "+FRVal);
+                double memFloatVal = convertToFloat(MBR);
+                System.out.println("memFloatVal: "+memFloatVal);
+                FRVal+=memFloatVal;
+                System.out.println("Added FRVal: "+FRVal);
+                double memFloat = getIntValofFloat(FRVal);
+                memory[MAR]=(short)memFloat;
+                if(FRVal>=Math.pow(2,16)){
+                    CC0=1;
+                    Populate_CC();
+                }
+                else{
+                    CC0=0;
+                    Populate_CC();
+                }
+                if(flag_F==0){
+                    Populate_FR0();
+                }
+                else{
+                    Populate_FR1();
+                }
+            }
+            
+            // FSUB
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='1' &&
+                    IR_binary.charAt(5)=='0')
+            {
+                ConsoleLog.append("FADD ");
+                short Fx=0;
+                int flag_F=-1;
+                //Check for Fx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Fx = FR0
+                {
+                    Fx=FR0;
+                    flag_F=0;
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Fx = FR1
+                {
+                    Fx=FR1;
+                    flag_F=1;
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                else //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = (short) memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = (short) memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = (short) memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = (short) memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                double FRVal = convertToFloat(Fx);
+                double memFloatVal = convertToFloat(MBR);
+                FRVal-=memFloatVal;
+                short memFloat = (short)getIntValofFloat(FRVal);
+                memory[MAR]=memFloat;
+                if(FRVal<=-1*Math.pow(2,16)){
+                    CC1=1;
+                    Populate_CC();
+                }
+                else{
+                    CC1=0;
+                    Populate_CC();
+                }
+                if(flag_F==0){
+                    Populate_FR0();
+                }
+                else{
+                    Populate_FR1();
+                }
+            }
+            
+            // VADD
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='1' &&
+                    IR_binary.charAt(5)=='1')
+            {
+                ConsoleLog.append("VADD ");
+                short Fx=0;
+                int flag_F=-1;
+                //Check for Fx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Fx = FR0
+                {
+                    Fx=FR0;
+                    flag_F=0;
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Fx = FR1
+                {
+                    Fx=FR1;
+                    flag_F=1;
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                else //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = (short) memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = (short) memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = (short) memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = (short) memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                double FRVal = convertToFloat(Fx);
+                for(int i=1;i<=FRVal;i++){
+                    double memFloatVal1 = convertToFloat((short) (memory[MAR+i-1]));
+                    double memFloatVal2 = convertToFloat((short) (memory[MAR+i]));
+                    memFloatVal1+=memFloatVal2;
+                    short memFloatVal = (short)getIntValofFloat(memFloatVal1);
+                    memory[MAR+i-1]=(short) memFloatVal;
+                }
+            }
+            
+            // VSUB
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='1' &&
+                    IR_binary.charAt(4)=='0' &&
+                    IR_binary.charAt(5)=='0')
+            {
+                ConsoleLog.append("VSUB ");
+                short Fx=0;
+                int flag_F=-1;
+                //Check for Fx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Fx = FR0
+                {
+                    Fx=FR0;
+                    flag_F=0;
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Fx = FR1
+                {
+                    Fx=FR1;
+                    flag_F=1;
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                else //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = (short) memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = (short) memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = (short) memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = (short) memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                double FRVal = convertToFloat(Fx);
+                for(int i=1;i<=FRVal;i++){
+                    double memFloatVal1 = convertToFloat((short) (memory[MAR+i-1]));
+                    double memFloatVal2 = convertToFloat((short) (memory[MAR+i]));
+                    memFloatVal1-=memFloatVal2;
+                    short memFloatVal = (short)getIntValofFloat(memFloatVal1);
+                    memory[MAR+i-1]=(short) memFloatVal;
+                }
+            }
+            
+            // CNVRT
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='0' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='1' &&
+                    IR_binary.charAt(4)=='0' &&
+                    IR_binary.charAt(5)=='1')
+            {
+                ConsoleLog.append("CNVRT ");
+                short Fx=0;
+                int flag_F=-1;
+                //Check for Fx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Fx = FR0
+                {
+                    Fx=FR0;
+                    flag_F=0;
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Fx = FR1
+                {
+                    Fx=FR1;
+                    flag_F=1;
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                else //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = (short) memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = (short) memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = (short) memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = (short) memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                if(Fx==0){ //convert to floating point
+                    short FRVal = MBR;
+                    short memFloatVal = (short)getIntValofFloat(FRVal);
+                    memory[MAR]=memFloatVal;
+                }
+                else{ //convert to integer
+                    short FRVal = (short) convertToFloat(MBR);
+                    memory[MAR]=FRVal;
+                }
+                if(flag_F==0){
+                    Populate_FR0();
+                }
+                else{
+                    Populate_FR1();
+                }
+            }
+                        
+            // LDFR
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='1' &&
+                    IR_binary.charAt(5)=='0')
+            {
+                ConsoleLog.append("LDFR ");
+                int flag_F=-1;
+                //Check for Fx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Fx = FR0
+                {
+                    flag_F=0;
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Fx = FR1
+                {
+                    flag_F=1;
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                else //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = (short) memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = (short) memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = (short) memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = (short) memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                if(flag_F==0){ //Load Floating Register FR0 from Memory
+                    FR0 = MBR;
+                }
+                else{ //Load Floating Register FR1 from Memory
+                    FR1 = MBR;
+                }
+                if(flag_F==0){
+                    Populate_FR0();
+                }
+                else{
+                    Populate_FR1();
+                }
+            }
+
+            // STFR
+            else if(IR_binary.length() == 16 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='0' &&
+                    IR_binary.charAt(3)=='0' &&
+                    IR_binary.charAt(4)=='1' &&
+                    IR_binary.charAt(5)=='1')
+            {
+                ConsoleLog.append("STFR ");
+                int flag_F=-1;
+                //Check for Fx
+                if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='0') //Fx = FR0
+                {
+                    flag_F=0;
+                }
+                else if(IR_binary.charAt(6)=='0' && 
+                IR_binary.charAt(7)=='1') //Fx = FR1
+                {
+                    flag_F=1;
+                }
+                else if(IR_binary.charAt(6)=='1' && 
+                IR_binary.charAt(7)=='0') //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                else //throw error
+                {
+                    ConsoleLog.append("Incorrect FR value given\n");
+                }
+                if(flag_I == 0)
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        
+                        MAR = getAddress(IR);
+                        if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 -> {
+                                MAR = (short) (getAddress(IR) + X1);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 2 -> {
+                                MAR = (short) (getAddress(IR) + X2);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            case 3 -> {
+                                MAR = (short) (getAddress(IR) + X3);if(memoryOutofBoundCheck(MAR)) return;
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else   //I = 1
+                {
+                    //No Indexing
+                    if(flag_IXR == 0)
+                    {
+                        MAR = (short) memory[getAddress(IR)];if(memoryOutofBoundCheck(MAR)) return;
+                    }
+                    else  //Indexed
+                    {
+                        switch (flag_IXR) {
+                            case 1 : MAR = (short) memory[getAddress(IR) + X1];if(memoryOutofBoundCheck(MAR)) return;
+                            case 2 : MAR = (short) memory[getAddress(IR) + X2];if(memoryOutofBoundCheck(MAR)) return;
+                            case 3 : MAR = (short) memory[getAddress(IR) + X3];if(memoryOutofBoundCheck(MAR)) return;
+                            default : {
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Populate_MAR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    MBR = (short) memory[MAR];
+                    Populate_MBR();
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                if(flag_F==0){ //Store Floating Register FR0 to Memory
+                    memory[MAR] = FR0;
+                }
+                else{ //Store Floating Register FR1 to Memory
+                    memory[MAR] = FR1;
+                }
+                if(flag_F==0){
+                    Populate_FR0();
+                }
+                else{
+                    Populate_FR1();
+                }
+            }
+            
+            //TRAP
+            else if(IR_binary.length() == 15 &&
+                    IR_binary.charAt(0)=='1' &&
+                    IR_binary.charAt(1)=='1' &&
+                    IR_binary.charAt(2)=='1' &&
+                    IR_binary.charAt(3)=='1' &&
+                    IR_binary.charAt(4)=='0')
+            {
+                 ConsoleLog.append("TRAP instruction start.\n");
+		short Count=getAddress(IR);
+                ConsoleLog.append("EA : " + Count);
+		int trapCode = Count;
+                ConsoleLog.append(" Count : " + trapCode+"\n");
+		 if(trapCode>15 || trapCode<0) {
+	        	MFR= 2; // Illegal Code
+                        Populate_MFR();
+	        }
+		// Storing the value of  PC+1 in the memory location 2
+                memory[2]=  (short) (PC+1);
+                ConsoleLog.append("Memory 2." + memory[2]+"\n");
+		PC =(short) (trapCode + memory[0]);
+		ConsoleLog.append("TRAP instruction end.\n");
+            }
+            else {
+                MFR= 4; // Illegal Op code
+                PC =(short) (memory[1]);
+                ConsoleLog.append("Illegal OPCODE!\n");
+                Populate_MFR();
+            }
+        }   
+        
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        PC++;
+        Populate_PC();
+    }
+    
+    public void Populate_MFR(){
+        String MFR_binary = Integer.toBinaryString(MFR);
+        if (MFR_binary.length()>=1 && MFR_binary.charAt(MFR_binary.length()-1)=='1'){
+            MFR_0.setBackground(Color.yellow);
+        }
+        else{
+            MFR_0.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (MFR_binary.length()>=2 && MFR_binary.charAt(MFR_binary.length()-2)=='1'){
+            MFR_1.setBackground(Color.yellow);
+        }
+        else{
+            MFR_1.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (MFR_binary.length()>=3 && MFR_binary.charAt(MFR_binary.length()-3)=='1'){
+            MFR_2.setBackground(Color.yellow);
+        }
+        else{
+            MFR_2.setBackground(Color.decode("#F2F2F2"));
+        }
+        if (MFR_binary.length()>=4 && MFR_binary.charAt(MFR_binary.length()-4)=='1'){
+            MFR_3.setBackground(Color.yellow);
+        }
+        else{
+            MFR_3.setBackground(Color.decode("#F2F2F2"));
+        }
+        
+      
+    }
+    
     private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Run_Display.setBackground(Color.yellow);
-                int flag_Halt = 0;
+                short flag_Halt = 0;
                 while(flag_Halt == 0){
-                    Clear();
-                    Populate_PC();
-                    IR = memory[PC];
-                    Populate_IR();System.out.println("IR: "+IR);
                     try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                    }   
-
-                    int flag_GPR = 0, flag_IXR = 0, flag_I = 0;
-                    //MAR = PC;
-
-                    if(IR == 0)   //Halt
-                    {
-                        MAR = PC;
-                        Populate_MAR();
-
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        Halt_Display.setBackground(Color.yellow);
-
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        PC++;
-                        Populate_PC();
-                        Run_Display.setBackground(Color.white);
-                        return;
-                    }
-
-                    String IR_binary = Integer.toBinaryString(IR);
-                    System.out.println(IR_binary.length());
-                    if(IR_binary.length() <= 10)
-                    {
-                        MBR = IR;
-
-                        MAR = PC;
-                        Populate_MAR();
-
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        Populate_MBR();
-                    }
-                    else
-                    {
-                        //GPR
-                        if(IR_binary.charAt(IR_binary.length()-10)=='0' && IR_binary.charAt(IR_binary.length()-9)=='0')
-                        {
-                            flag_GPR = 1;
-                            System.out.println("flag_GPR: "+flag_GPR);
-                        }
-                        else if(IR_binary.charAt(IR_binary.length()-10)=='0' && IR_binary.charAt(IR_binary.length()-9)=='1')
-                        {
-                            flag_GPR = 2;
-                            System.out.println("flag_GPR: "+flag_GPR);
-                        }
-                        else if(IR_binary.charAt(IR_binary.length()-10)=='1' && IR_binary.charAt(IR_binary.length()-9)=='0')
-                        {
-                            flag_GPR = 3;
-                            System.out.println("flag_GPR: "+flag_GPR);
-                        }
-                        else
-                        {
-                            flag_GPR = 4;
-                            System.out.println("flag_GPR: "+flag_GPR);
-                        }
-
-                        //IXR
-                        if(IR_binary.charAt(IR_binary.length()-8)=='0' && IR_binary.charAt(IR_binary.length()-7)=='1')
-                        {
-                            flag_IXR = 1;
-                        }
-                        else if(IR_binary.charAt(IR_binary.length()-8)=='1' && IR_binary.charAt(IR_binary.length()-7)=='0')
-                        {
-                            flag_IXR = 2;
-                        }
-                        else if(IR_binary.charAt(IR_binary.length()-8)=='1' && IR_binary.charAt(IR_binary.length()-7)=='1')
-                        {
-                            flag_IXR = 3;
-                        }
-
-                        if(IR_binary.charAt(IR_binary.length()-6)=='1')
-                        {
-                            flag_I = 1;
-                        }
-
-                        System.out.println("getAddress(IR):"+getAddress(IR));
-                        //LDR
-                        if(IR_binary.length() == 11 && IR_binary.charAt(0)=='1')
-                        {   System.out.println("LDR");
-                            //I = 0
-                            if(flag_I == 0)
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    System.out.println("getAddress(IR):"+getAddress(IR));
-                                    MAR = getAddress(IR);
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 -> {
-                                            MAR = getAddress(IR) + X1;
-                                        }
-                                        case 2 -> {
-                                            MAR = getAddress(IR) + X2;
-                                        }
-                                        case 3 -> {
-                                            MAR = getAddress(IR) + X3;
-                                        }
-                                        default -> {
-                                        }
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                MBR = memory[MAR];
-                                Populate_MBR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                switch(flag_GPR)
-                                {
-                                    case 1 -> {
-                                        R0 = memory[MAR];
-                                        Populate_R0();
-                                    }
-                                    case 2 -> {
-                                        R1 = memory[MAR];
-                                        Populate_R1();
-                                    }
-                                    case 3 -> {
-                                        R2 = memory[MAR];
-                                        Populate_R2();
-                                    }
-                                    case 4 -> {
-                                        R3 = memory[MAR];
-                                        Populate_R3();
-                                    }
-                                }
-                            }
-                            else   //I = 1
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    MAR = memory[getAddress(IR)];
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 : MAR = memory[getAddress(IR) + X1];
-                                        case 2 : MAR = memory[getAddress(IR) + X2];
-                                        case 3 : MAR = memory[getAddress(IR) + X3];
-                                        default : {
-                                        }
-                                    }
-                                }
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                MBR = memory[MAR];
-                                Populate_MBR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                switch(flag_GPR)
-                                {
-                                    case 1 -> {
-                                        R0 = memory[MAR];
-                                        Populate_R0();
-                                    }
-                                    case 2 -> {
-                                        R1 = memory[MAR];
-                                        Populate_R1();
-                                    }
-                                    case 3 -> {
-                                        R2 = memory[MAR];
-                                        Populate_R2();
-                                    }
-                                    case 4 -> {
-                                        R3 = memory[MAR];
-                                        Populate_R3();
-                                    }
-                                }
-                            }
-                        }
-
-                        //STR
-                        if(IR_binary.length() == 12 &&
-                                IR_binary.charAt(0)=='1' &&
-                                IR_binary.charAt(1)=='0')
-                        {System.out.println("STR");
-                            //I = 0
-                            if(flag_I == 0)
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    System.out.println("getAddress(IR):"+getAddress(IR));
-                                    MAR = getAddress(IR);
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 -> {
-                                            MAR = getAddress(IR) + X1;
-                                        }
-                                        case 2 -> {
-                                            MAR = getAddress(IR) + X2;
-                                        }
-                                        case 3 -> {
-                                            MAR = getAddress(IR) + X3;
-                                        }
-                                        default -> {
-                                        }
-                                    }
-                                }
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-                                switch(flag_GPR)
-                                {
-                                    case 1 -> {
-                                        memory[MAR] = R0;
-                                        System.out.println("R0 here: "+R0);
-                                    }
-                                    case 2 -> {
-                                        memory[MAR] = R1;
-                                        System.out.println("R1 here: "+R1);
-                                    }
-                                    case 3 -> {
-                                        memory[MAR] = R2;
-                                        System.out.println("R2 here: "+R2);
-                                    }
-                                    case 4 -> {
-                                        memory[MAR] = R3;
-                                        System.out.println("R3 here: "+R3);
-                                    }
-                                }
-                                MBR = memory[MAR];
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MBR();
-                            }
-                            else   //I = 1
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    MAR = memory[getAddress(IR)];
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 : MAR = memory[getAddress(IR) + X1];
-                                        case 2 : MAR = memory[getAddress(IR) + X2];
-                                        case 3 : MAR = memory[getAddress(IR) + X3];
-                                        default : {
-                                        }
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-
-                                switch(flag_GPR)
-                                {
-                                    case 1 -> {
-                                        memory[MAR] = R0;
-                                    }
-                                    case 2 -> {
-                                        memory[MAR] = R1;
-                                    }
-                                    case 3 -> {
-                                        memory[MAR] = R2;
-                                    }
-                                    case 4 -> {
-                                        memory[MAR] = R3;
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                MBR = memory[MAR];
-                                Populate_MBR();
-                            }
-                        }
-
-                        //LDA
-                        if(IR_binary.length() == 12 &&
-                                IR_binary.charAt(0)=='1' &&
-                                IR_binary.charAt(1)=='1')
-                        {
-                            //I = 0
-                            if(flag_I == 0)
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    System.out.println("getAddress(IR):"+getAddress(IR));
-                                    MAR = getAddress(IR);
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 -> {
-                                            MAR = getAddress(IR) + X1;
-                                        }
-                                        case 2 -> {
-                                            MAR = getAddress(IR) + X2;
-                                        }
-                                        case 3 -> {
-                                            MAR = getAddress(IR) + X3;
-                                        }
-                                        default -> {
-                                        }
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                MBR = memory[MAR];
-                                Populate_MBR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                switch(flag_GPR)
-                                {
-                                    case 1 -> {
-                                        R0 = MAR;
-                                        Populate_R0();
-                                    }
-                                    case 2 -> {
-                                        R1 = MAR;
-                                        Populate_R1();
-                                    }
-                                    case 3 -> {
-                                        R2 = MAR;
-                                        Populate_R2();
-                                    }
-                                    case 4 -> {
-                                        R3 = MAR;
-                                        Populate_R3();
-                                    }
-                                }
-                            }
-                            else   //I = 1
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    MAR = memory[getAddress(IR)];
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 : MAR = memory[getAddress(IR) + X1];
-                                        case 2 : MAR = memory[getAddress(IR) + X2];
-                                        case 3 : MAR = memory[getAddress(IR) + X3];
-                                        default : {
-                                        }
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                MBR = memory[MAR];
-                                Populate_MBR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                switch(flag_GPR)
-                                {
-                                    case 1 -> {
-                                        R0 = MAR;
-                                        Populate_R0();
-                                    }
-                                    case 2 -> {
-                                        R1 = MAR;
-                                        Populate_R1();
-                                    }
-                                    case 3 -> {
-                                        R2 = MAR;
-                                        Populate_R2();
-                                    }
-                                    case 4 -> {
-                                        R3 = MAR;
-                                        Populate_R3();
-                                    }
-                                }
-                            }
-                        }
-
-                        //LDX
-                        if(IR_binary.length() == 16 &&
-                                IR_binary.charAt(0)=='1' &&
-                                IR_binary.charAt(1)=='0' &&
-                                IR_binary.charAt(2)=='1' &&
-                                IR_binary.charAt(3)=='0' &&
-                                IR_binary.charAt(4)=='0' &&
-                                IR_binary.charAt(5)=='1')
-                        {
-                            //I = 0
-                            if(flag_I == 0)
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    System.out.println("getAddress(IR):"+getAddress(IR));
-                                    MAR = getAddress(IR);
-                                    System.out.println("MAR"+MAR);
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 -> {
-                                            MAR = getAddress(IR) + X1;
-                                            System.out.println("MAR1"+MAR);
-                                        }
-                                        case 2 -> {
-                                            MAR = getAddress(IR) + X2;
-                                            System.out.println("MAR2"+MAR);
-                                        }
-                                        case 3 -> {
-                                            MAR = getAddress(IR) + X3;
-                                            System.out.println("MAR3"+MAR);
-                                        }
-                                        default -> {
-                                        }
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-
-                                MBR = memory[MAR];
-                                System.out.println("MBR"+MBR);
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MBR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                switch(flag_IXR)
-                                {
-                                    case 1 -> {
-                                        X1 = MBR;
-                                        Populate_X1();
-                                    }
-                                    case 2 -> {
-                                        X2 = MBR;
-                                        Populate_X2();
-                                    }
-                                    case 3 -> {
-                                        X3 = MBR;
-                                        Populate_X3();
-                                    }
-                                }
-                            }
-                            else   //I = 1
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    MAR = memory[getAddress(IR)];
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 : MAR = memory[getAddress(IR) + X1];
-                                        case 2 : MAR = memory[getAddress(IR) + X2];
-                                        case 3 : MAR = memory[getAddress(IR) + X3];
-                                        default : {
-                                        }
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                MBR = memory[MAR];
-                                Populate_MBR();
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                switch(flag_IXR)
-                                {
-                                    case 1 -> {
-                                        X1 = MAR;
-                                        Populate_X1();
-                                    }
-                                    case 2 -> {
-                                        X2 = MAR;
-                                        Populate_X2();
-                                    }
-                                    case 3 -> {
-                                        X3 = MAR;
-                                        Populate_X3();
-                                    }
-                                }
-                            }
-                        }
-
-                        //STX
-                        if(IR_binary.length() == 16 &&
-                                IR_binary.charAt(0)=='1' &&
-                                IR_binary.charAt(1)=='0' &&
-                                IR_binary.charAt(2)=='1' &&
-                                IR_binary.charAt(3)=='0' &&
-                                IR_binary.charAt(4)=='1' &&
-                                IR_binary.charAt(5)=='0')
-                        {
-                            //I = 0
-                            if(flag_I == 0)
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    System.out.println("getAddress(IR):"+getAddress(IR));
-                                    MAR = getAddress(IR);
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 -> {
-                                            MAR = getAddress(IR) + X1;
-                                        }
-                                        case 2 -> {
-                                            MAR = getAddress(IR) + X2;
-                                        }
-                                        case 3 -> {
-                                            MAR = getAddress(IR) + X3;
-                                        }
-                                        default -> {
-                                        }
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-                                switch(flag_IXR)
-                                {
-                                    case 1 -> {
-                                        memory[MAR] = X1;
-                                    }
-                                    case 2 -> {
-                                        memory[MAR] = X2;
-                                    }
-                                    case 3 -> {
-                                        memory[MAR] = X3;
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                MBR = memory[MAR];
-                                Populate_MBR();
-                            }
-                            else   //I = 1
-                            {
-                                //No Indexing
-                                if(flag_IXR == 0)
-                                {
-                                    MAR = memory[getAddress(IR)];
-                                }
-                                else  //Indexed
-                                {
-                                    switch (flag_IXR) {
-                                        case 1 : MAR = memory[getAddress(IR) + X1];
-                                        case 2 : MAR = memory[getAddress(IR) + X2];
-                                        case 3 : MAR = memory[getAddress(IR) + X3];
-                                        default : {
-                                        }
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                Populate_MAR();
-
-                                switch(flag_IXR)
-                                {
-                                    case 1 -> {
-                                        memory[MAR] = X1;
-                                    }
-                                    case 2 -> {
-                                        memory[MAR] = X2;
-                                    }
-                                    case 3 -> {
-                                        memory[MAR] = X3;
-                                    }
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                MBR = memory[MAR];
-                                Populate_MBR();
-                            }
-                        }
-                    }   
-
-                    try {
-                        Thread.sleep(1000);
+                        ExecuteInstruction();
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    PC++;
-                    Populate_PC();
+                    if(IR==0){
+                        ConsoleLog.append("Machine HALTed !\n");
+                        break;
+                    }
                 }
             }
         }).start();
@@ -7779,11 +12460,11 @@ public class Simulator extends javax.swing.JFrame {
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
         int returnValue = jfc.showOpenDialog(null);
-        // int returnValue = jfc.showSaveDialog(null);
+        // short returnValue = jfc.showSaveDialog(null);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
-                System.out.println(selectedFile.getAbsolutePath());
+                
                 BufferedReader br = null;
                 try {
                     br = new BufferedReader(new FileReader(selectedFile));
@@ -7792,13 +12473,13 @@ public class Simulator extends javax.swing.JFrame {
                 }
                 String st;
                 try {
-                    int flag_PC = 0;
+                    short flag_PC = 0;
                     while ((st = br.readLine()) != null)
                     {
-                        System.out.println(st);
+                        
                         String[] content = st.split(" ");
-                        int location = Integer.parseInt(content[0], 16); 
-                        int value = Integer.parseInt(content[1], 16); 
+                        short location = Short.parseShort(content[0], 16); 
+                        short value = Short.parseShort(content[1], 16); 
                         memory[location] = value;
                         if( flag_PC == 0){
                             flag_PC++;
@@ -7823,6 +12504,465 @@ public class Simulator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ADDRESS_0ActionPerformed
 
+    private void Run_Program_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Run_Program_1ActionPerformed
+       /*String str = KeyBoard.getText();       
+       String[] arrOfStr = str.split("\n");
+
+       int Lines = KeyBoard.getLineCount();
+       short Address,i;
+       for(Address=100,i=0; Address<100+Lines; Address++,i++){
+           memory[Address]=Short.parseShort(arrOfStr[i], 16);
+           ConsoleLog.append(arrOfStr[i]+" stored at : 0X"+Integer.toHexString(Address)+"\n");
+       }
+       ConsoleLog.append("Storing instructions from Program1.txt to memory...\n");
+       File file = new File("./Program1.txt");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String st;
+        try {
+            short flag_PC = 0;
+            while ((st = br.readLine()) != null)
+            {
+                String[] content = st.split(" ");
+                short location = Short.parseShort(content[0], 16); 
+                short value = Short.parseShort(content[1], 16); 
+                memory[location] = value;
+                ConsoleLog.append(content[1]+" stored at : 0X"+content[0]+"\n");
+                if( flag_PC == 0){
+                    flag_PC++;
+                    PC = location;
+                    Populate_PC();
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Reset_Toggle_Instruction();
+        Printer.append("\n");*/
+        File file = new File("./Program1.txt");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String st;
+        try {
+            short flag_PC = 0;
+            while ((st = br.readLine()) != null)
+            {
+                String[] content = st.split(" ");
+                int location = Integer.parseInt(content[0], 16); 
+                int value = Integer.parseInt(content[1], 16); 
+                memory[location] = (short) value;
+                if( flag_PC == 0){
+                    flag_PC++;
+                    PC = (short) location;
+                    Populate_PC();
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ConsoleLog.append("Program 1 code loaded to memory!\n");
+        Reset_Toggle_Instruction();
+    }//GEN-LAST:event_Run_Program_1ActionPerformed
+
+    private void KeyBoardKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KeyBoardKeyPressed
+        
+    }//GEN-LAST:event_KeyBoardKeyPressed
+
+    private void KeyBoardKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KeyBoardKeyReleased
+        String str = KeyBoard.getText();
+        if(evt.getKeyCode()==evt.VK_CAPS_LOCK){
+            return;
+        }
+        if(InputSignal==0){
+            if(str.charAt(str.length()-1)!='\n')
+            {
+                InputVal=(short) str.charAt(str.length()-1);
+            }
+            else{
+                InputVal=(short) ((char)10);
+            }
+            InputSignal = 1;
+        }
+    }//GEN-LAST:event_KeyBoardKeyReleased
+
+    private void Run_Program_2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Run_Program_2ActionPerformed
+        File file = new File("./Program2_text.txt");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String st;
+        int location = 600;
+        try {
+            while ((st = br.readLine()) != null)
+            {
+                for(int i=0;i<st.length();i++){
+                    int value = (int)st.charAt(i); 
+                    memory[location] = (short) value;
+                    location++;
+                    
+                }
+                
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        File file2 = new File("./Program2.txt");
+        BufferedReader br2 = null;
+        try {
+            br2 = new BufferedReader(new FileReader(file2));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        String st2;
+        try {
+            short flag_PC = 0;
+            while ((st2 = br2.readLine()) != null)
+            {
+                String[] content = st2.split(" ");
+                location = Integer.parseInt(content[0], 16); 
+                int value = Integer.parseInt(content[1], 16); 
+                memory[location] = (short) value;
+                if( flag_PC == 0){
+                    flag_PC++;
+                    PC = (short) location;
+                    Populate_PC();
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        ConsoleLog.append("Program 2 code loaded to memory!\n");
+        Reset_Toggle_Instruction();
+    }//GEN-LAST:event_Run_Program_2ActionPerformed
+
+    private void Load_FR0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Load_FR0ActionPerformed
+        FR0 = 0;
+        if (ADDRESS_0.isSelected()){
+            FR0+=Math.pow(2,0);
+            FR0_0.setBackground(Color.yellow);
+        }
+        else {
+            FR0_0.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (ADDRESS_1.isSelected()){
+            FR0+=Math.pow(2,1);
+            FR0_1.setBackground(Color.yellow);
+        }
+        else {
+            FR0_1.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (ADDRESS_2.isSelected()){
+            FR0+=Math.pow(2,2);
+            FR0_2.setBackground(Color.yellow);
+        }
+        else {
+            FR0_2.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (ADDRESS_3.isSelected()){
+            FR0+=Math.pow(2,3);
+            FR0_3.setBackground(Color.yellow);
+        }
+        else {
+            FR0_3.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (ADDRESS_4.isSelected()){
+            FR0+=Math.pow(2,4);
+            FR0_4.setBackground(Color.yellow);
+        }
+        else {
+            FR0_4.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (I_5.isSelected()){
+            FR0+=Math.pow(2,5);
+            FR0_5.setBackground(Color.yellow);
+        }
+        else {
+            FR0_5.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (IXR_6.isSelected()){
+            FR0+=Math.pow(2,6);
+            FR0_6.setBackground(Color.yellow);
+        }
+        else {
+            FR0_6.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (IXR_7.isSelected()){
+            FR0+=Math.pow(2,7);
+            FR0_7.setBackground(Color.yellow);
+        }
+        else {
+            FR0_7.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (GPR_8.isSelected()){
+            FR0+=Math.pow(2,8);
+            FR0_8.setBackground(Color.yellow);
+        }
+        else {
+            FR0_8.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (GPR_9.isSelected()){
+            FR0+=Math.pow(2,9);
+            FR0_9.setBackground(Color.yellow);
+        }
+        else {
+            FR0_9.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_10.isSelected()){
+            FR0+=Math.pow(2,10);
+            FR0_10.setBackground(Color.yellow);
+        }
+        else {
+            FR0_10.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_11.isSelected()){
+            FR0+=Math.pow(2,11);
+            FR0_11.setBackground(Color.yellow);
+        }
+        else {
+            FR0_11.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_12.isSelected()){
+            FR0+=Math.pow(2,12);
+            FR0_12.setBackground(Color.yellow);
+        }
+        else {
+            FR0_12.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_13.isSelected()){
+            FR0+=Math.pow(2,13);
+            FR0_13.setBackground(Color.yellow);
+        }
+        else {
+            FR0_13.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_14.isSelected()){
+            FR0+=Math.pow(2,14);
+            FR0_14.setBackground(Color.yellow);
+        }
+        else {
+            FR0_14.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_15.isSelected()){
+            FR0+=Math.pow(2,15);
+            FR0_15.setBackground(Color.yellow);
+        }
+        else {
+            FR0_15.setBackground(Color.decode("#F2F2F2"));
+        }
+        Reset_Toggle_Instruction();
+    }//GEN-LAST:event_Load_FR0ActionPerformed
+
+    private void Load_FR1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Load_FR1ActionPerformed
+        FR1 = 0;
+        if (ADDRESS_0.isSelected()){
+            FR1+=Math.pow(2,0);
+            FR1_0.setBackground(Color.yellow);
+        }
+        else {
+            FR1_0.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (ADDRESS_1.isSelected()){
+            FR1+=Math.pow(2,1);
+            FR1_1.setBackground(Color.yellow);
+        }
+        else {
+            FR1_1.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (ADDRESS_2.isSelected()){
+            FR1+=Math.pow(2,2);
+            FR1_2.setBackground(Color.yellow);
+        }
+        else {
+            FR1_2.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (ADDRESS_3.isSelected()){
+            FR1+=Math.pow(2,3);
+            FR1_3.setBackground(Color.yellow);
+        }
+        else {
+            FR1_3.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (ADDRESS_4.isSelected()){
+            FR1+=Math.pow(2,4);
+            FR1_4.setBackground(Color.yellow);
+        }
+        else {
+            FR1_4.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (I_5.isSelected()){
+            FR1+=Math.pow(2,5);
+            FR1_5.setBackground(Color.yellow);
+        }
+        else {
+            FR1_5.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (IXR_6.isSelected()){
+            FR1+=Math.pow(2,6);
+            FR1_6.setBackground(Color.yellow);
+        }
+        else {
+            FR1_6.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (IXR_7.isSelected()){
+            FR1+=Math.pow(2,7);
+            FR1_7.setBackground(Color.yellow);
+        }
+        else {
+            FR1_7.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (GPR_8.isSelected()){
+            FR1+=Math.pow(2,8);
+            FR1_8.setBackground(Color.yellow);
+        }
+        else {
+            FR1_8.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (GPR_9.isSelected()){
+            FR1+=Math.pow(2,9);
+            FR1_9.setBackground(Color.yellow);
+        }
+        else {
+            FR1_9.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_10.isSelected()){
+            FR1+=Math.pow(2,10);
+            FR1_10.setBackground(Color.yellow);
+        }
+        else {
+            FR1_10.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_11.isSelected()){
+            FR1+=Math.pow(2,11);
+            FR1_11.setBackground(Color.yellow);
+        }
+        else {
+            FR1_11.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_12.isSelected()){
+            FR1+=Math.pow(2,12);
+            FR1_12.setBackground(Color.yellow);
+        }
+        else {
+            FR1_12.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_13.isSelected()){
+            FR1+=Math.pow(2,13);
+            FR1_13.setBackground(Color.yellow);
+        }
+        else {
+            FR1_13.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_14.isSelected()){
+            FR1+=Math.pow(2,14);
+            FR1_14.setBackground(Color.yellow);
+        }
+        else {
+            FR1_14.setBackground(Color.decode("#F2F2F2"));
+        }
+
+        if (OP_15.isSelected()){
+            FR1+=Math.pow(2,15);
+            FR1_15.setBackground(Color.yellow);
+        }
+        else {
+            FR1_15.setBackground(Color.decode("#F2F2F2"));
+        }
+        Reset_Toggle_Instruction();
+    }//GEN-LAST:event_Load_FR1ActionPerformed
+
+    private void Run_Vector_ProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Run_Vector_ProgramActionPerformed
+        File file = new File("./VectorProgram.txt");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String st;
+        try {
+            short flag_PC = 0;
+            while ((st = br.readLine()) != null)
+            {
+                String[] content = st.split(" ");
+                int location = Integer.parseInt(content[0], 16); 
+                int value = Integer.parseInt(content[1], 16); 
+                memory[location] = (short) value;
+                if( flag_PC == 0){
+                    flag_PC++;
+                    PC = (short) location;
+                    Populate_PC();
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ConsoleLog.append("Vector Program code loaded to memory!\n");
+        Reset_Toggle_Instruction();
+    }//GEN-LAST:event_Run_Vector_ProgramActionPerformed
+
+    public boolean memoryOutofBoundCheck(short memoryAdr){ //MFR
+        if(memoryAdr > 2056){
+            MFR = 8;
+            PC =(short) ( memory[1]);
+            Populate_PC();
+            ConsoleLog.append("Memory being tried to access beyond 2048\n");
+            
+        } else if(memoryAdr>0 && memoryAdr<=5){
+            MFR = 1; 
+            PC =(short) ( memory[1]);
+            Populate_PC();
+            ConsoleLog.append("Restricted memory being tried to access\n");
+            
+        } else {
+            return false;
+        }
+        Populate_MFR();
+        return true;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -7868,7 +13008,41 @@ public class Simulator extends javax.swing.JFrame {
     private javax.swing.JPanel CC_1;
     private javax.swing.JPanel CC_2;
     private javax.swing.JPanel CC_3;
+    private javax.swing.JPanel CacheArea;
     private javax.swing.JButton Clear_LEDs;
+    private javax.swing.JTextArea ConsoleLog;
+    private javax.swing.JPanel FR0_0;
+    private javax.swing.JPanel FR0_1;
+    private javax.swing.JPanel FR0_10;
+    private javax.swing.JPanel FR0_11;
+    private javax.swing.JPanel FR0_12;
+    private javax.swing.JPanel FR0_13;
+    private javax.swing.JPanel FR0_14;
+    private javax.swing.JPanel FR0_15;
+    private javax.swing.JPanel FR0_2;
+    private javax.swing.JPanel FR0_3;
+    private javax.swing.JPanel FR0_4;
+    private javax.swing.JPanel FR0_5;
+    private javax.swing.JPanel FR0_6;
+    private javax.swing.JPanel FR0_7;
+    private javax.swing.JPanel FR0_8;
+    private javax.swing.JPanel FR0_9;
+    private javax.swing.JPanel FR1_0;
+    private javax.swing.JPanel FR1_1;
+    private javax.swing.JPanel FR1_10;
+    private javax.swing.JPanel FR1_11;
+    private javax.swing.JPanel FR1_12;
+    private javax.swing.JPanel FR1_13;
+    private javax.swing.JPanel FR1_14;
+    private javax.swing.JPanel FR1_15;
+    private javax.swing.JPanel FR1_2;
+    private javax.swing.JPanel FR1_3;
+    private javax.swing.JPanel FR1_4;
+    private javax.swing.JPanel FR1_5;
+    private javax.swing.JPanel FR1_6;
+    private javax.swing.JPanel FR1_7;
+    private javax.swing.JPanel FR1_8;
+    private javax.swing.JPanel FR1_9;
     private javax.swing.JToggleButton GPR_8;
     private javax.swing.JToggleButton GPR_9;
     private javax.swing.JPanel Halt_Display;
@@ -7892,7 +13066,13 @@ public class Simulator extends javax.swing.JFrame {
     private javax.swing.JToggleButton IXR_6;
     private javax.swing.JToggleButton IXR_7;
     private javax.swing.JToggleButton I_5;
+    private javax.swing.JPanel Input;
+    private javax.swing.JLabel JLabel_Keyboard;
+    private javax.swing.JLabel JLabel_Printer;
+    private javax.swing.JTextArea KeyBoard;
     private javax.swing.JButton Load;
+    private javax.swing.JButton Load_FR0;
+    private javax.swing.JButton Load_FR1;
     private javax.swing.JButton Load_IR;
     private javax.swing.JButton Load_MAR;
     private javax.swing.JButton Load_MBR;
@@ -7954,6 +13134,8 @@ public class Simulator extends javax.swing.JFrame {
     private javax.swing.JPanel PC_7;
     private javax.swing.JPanel PC_8;
     private javax.swing.JPanel PC_9;
+    private javax.swing.JPanel Phase2;
+    private javax.swing.JTextArea Printer;
     private javax.swing.JPanel R0_0;
     private javax.swing.JPanel R0_1;
     private javax.swing.JPanel R0_10;
@@ -8020,9 +13202,44 @@ public class Simulator extends javax.swing.JFrame {
     private javax.swing.JPanel R3_9;
     private javax.swing.JButton Run;
     private javax.swing.JPanel Run_Display;
+    private javax.swing.JButton Run_Program_1;
+    private javax.swing.JButton Run_Program_2;
+    private javax.swing.JButton Run_Vector_Program;
     private javax.swing.JButton SS;
     private javax.swing.JButton Store;
     private javax.swing.JButton Store_plus;
+    private javax.swing.JTextField Tag_0;
+    private javax.swing.JTextField Tag_1;
+    private javax.swing.JTextField Tag_10;
+    private javax.swing.JTextField Tag_11;
+    private javax.swing.JTextField Tag_12;
+    private javax.swing.JTextField Tag_13;
+    private javax.swing.JTextField Tag_14;
+    private javax.swing.JTextField Tag_15;
+    private javax.swing.JTextField Tag_2;
+    private javax.swing.JTextField Tag_3;
+    private javax.swing.JTextField Tag_4;
+    private javax.swing.JTextField Tag_5;
+    private javax.swing.JTextField Tag_6;
+    private javax.swing.JTextField Tag_7;
+    private javax.swing.JTextField Tag_8;
+    private javax.swing.JTextField Tag_9;
+    private javax.swing.JTextField Value_0;
+    private javax.swing.JTextField Value_1;
+    private javax.swing.JTextField Value_10;
+    private javax.swing.JTextField Value_11;
+    private javax.swing.JTextField Value_12;
+    private javax.swing.JTextField Value_13;
+    private javax.swing.JTextField Value_14;
+    private javax.swing.JTextField Value_15;
+    private javax.swing.JTextField Value_2;
+    private javax.swing.JTextField Value_3;
+    private javax.swing.JTextField Value_4;
+    private javax.swing.JTextField Value_5;
+    private javax.swing.JTextField Value_6;
+    private javax.swing.JTextField Value_7;
+    private javax.swing.JTextField Value_8;
+    private javax.swing.JTextField Value_9;
     private javax.swing.JPanel X1_0;
     private javax.swing.JPanel X1_1;
     private javax.swing.JPanel X1_10;
@@ -8072,8 +13289,17 @@ public class Simulator extends javax.swing.JFrame {
     private javax.swing.JPanel X3_8;
     private javax.swing.JPanel X3_9;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel_Address;
     private javax.swing.JLabel jLabel_CC;
+    private javax.swing.JLabel jLabel_Cache;
     private javax.swing.JLabel jLabel_GPR;
     private javax.swing.JLabel jLabel_Halt;
     private javax.swing.JLabel jLabel_I;
@@ -8088,7 +13314,25 @@ public class Simulator extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel_R1;
     private javax.swing.JLabel jLabel_R2;
     private javax.swing.JLabel jLabel_R3;
+    private javax.swing.JLabel jLabel_R4;
+    private javax.swing.JLabel jLabel_R5;
     private javax.swing.JLabel jLabel_Run;
+    private javax.swing.JLabel jLabel_Tag0;
+    private javax.swing.JLabel jLabel_Tag1;
+    private javax.swing.JLabel jLabel_Tag10;
+    private javax.swing.JLabel jLabel_Tag11;
+    private javax.swing.JLabel jLabel_Tag12;
+    private javax.swing.JLabel jLabel_Tag13;
+    private javax.swing.JLabel jLabel_Tag14;
+    private javax.swing.JLabel jLabel_Tag15;
+    private javax.swing.JLabel jLabel_Tag2;
+    private javax.swing.JLabel jLabel_Tag3;
+    private javax.swing.JLabel jLabel_Tag4;
+    private javax.swing.JLabel jLabel_Tag5;
+    private javax.swing.JLabel jLabel_Tag6;
+    private javax.swing.JLabel jLabel_Tag7;
+    private javax.swing.JLabel jLabel_Tag8;
+    private javax.swing.JLabel jLabel_Tag9;
     private javax.swing.JLabel jLabel_X1;
     private javax.swing.JLabel jLabel_X2;
     private javax.swing.JLabel jLabel_X3;
@@ -8100,5 +13344,8 @@ public class Simulator extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
 }
